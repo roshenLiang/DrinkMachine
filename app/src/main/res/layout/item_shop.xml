@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:cardElevation="20dp"
+    app:cardCornerRadius="30dp"
+    android:layout_margin="10dp"
+    android:gravity="center"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/iv_shop"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:src="@mipmap/icon_defaultshop"
+        />
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="可乐"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:background="#9E886F"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/white"
+            android:textSize="40sp" />
+    <TextView
+        android:gravity="center"
+        android:id="@+id/tv_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="60sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="￥3.00" />
+        <TextView
+            android:gravity="center"
+            android:id="@+id/tv_describe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textSize="22sp"
+            android:lineSpacingExtra="5dp"
+            android:textColor="@color/colorPrimary"
+            android:text="狗不理包子的面、馅选料精细，制作工艺严格，外形美观，鲜而不腻，清香适口" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

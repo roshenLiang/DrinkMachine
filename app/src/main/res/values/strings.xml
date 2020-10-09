@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">饮料机</string>
+    <string name="machine">机器号：%1$s</string>
+    <string name="cur_temp">温度：%1$f</string>
+    <string name="open_serial_port">打开串口</string>
+    <string name="close_serial_port">关闭串口</string>
+</resources> 

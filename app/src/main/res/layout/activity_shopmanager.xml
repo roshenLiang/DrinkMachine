@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+ 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.uroica.drinkmachine.ui.factorymode.shopmanager.ShopManagerViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/c"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_top"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="15dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/tv_channelId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="货道"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+            <TextView
+                android:id="@+id/tv_channelfault"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="货道状态"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_shopname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="商品"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+
+            <TextView
+                android:id="@+id/tv_shoppic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="图片"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_combination"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:gravity="center"
+                android:text="组号"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+
+            <TextView
+                android:id="@+id/tv_capacity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:gravity="center"
+                android:text="容量"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_stock"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="库存"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="价钱"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ry_shopmanager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/ll_top" />
+
+        <LinearLayout
+            android:id="@+id/ll_all"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="100dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/ry_shopmanager">
+
+            <TextView
+                android:id="@+id/tv_one2full"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle_bg"
+                android:gravity="center"
+                android:text="※ 一键补满库存"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/tv_clear"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle_bg"
+                android:gravity="center"
+                android:text="※ 一键清空库存"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                tools:ignore="MissingConstraints" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_heatTime1"
+            style="@style/TestModeTextForHeat"
+            android:layout_marginLeft="50dp"
+            android:text="※ 商品1加热时间："
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_all"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/et_heatTime1"
+            style="@style/TestModeEdittext"
+            android:maxLength="3"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_heatTime1"
+            app:layout_constraintLeft_toRightOf="@id/tv_heatTime1" />
+
+        <TextView
+            android:id="@+id/tv_setHeart1"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="设置"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_heatTime1"
+            app:layout_constraintLeft_toRightOf="@id/et_heatTime1"
+            tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/tv_heatTime2"
+            style="@style/TestModeTextForHeat"
+            android:layout_marginLeft="50dp"
+            android:text="※ 商品2加热时间："
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_heatTime1"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/et_heatTime2"
+            style="@style/TestModeEdittext"
+            android:maxLength="3"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_heatTime2"
+            app:layout_constraintLeft_toRightOf="@id/tv_heatTime2" />
+        <TextView
+            android:id="@+id/tv_setHeart2"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="设置"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_heatTime2"
+            app:layout_constraintLeft_toRightOf="@id/et_heatTime2"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/tv_combination1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="组合1："
+            android:layout_marginLeft="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:textSize="40sp"
+            app:layout_constraintTop_toBottomOf="@id/et_heatTime2"
+            tools:ignore="MissingConstraints" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ry_combination1"
+            android:layout_marginLeft="70dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_combination1" />
+
+        <TextView
+            android:id="@+id/tv_combination2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="组合2："
+            android:textSize="40sp"
+            app:layout_constraintTop_toBottomOf="@id/ry_combination1"
+            tools:ignore="MissingConstraints" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ry_combination2"
+            android:layout_marginLeft="70dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_combination2" />
+
+
+        <RelativeLayout
+            android:id="@+id/rl_dialog"
+            android:layout_width="match_parent"
+            android:background="@color/fault_bg"
+            android:visibility="gone"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_margin="30dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:background="@drawable/rectangle_bg"
+                android:layout_height="wrap_content">
+                <ProgressBar
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"/>
+                <TextView
+                    android:id="@+id/tv_dialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="正在保存数据"
+                    android:textColor="@color/white"
+                    android:textSize="40sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

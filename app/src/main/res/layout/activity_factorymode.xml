@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+ 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.uroica.drinkmachine.ui.factorymode.FactoryModeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/btn_setParam"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="设置参数（串口参数，主副柜数量等）"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:onClickCommand="@{viewModel.setParameterOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/btn_testmode"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="测试机器模式"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            app:layout_constraintTop_toBottomOf="@id/btn_setParam"
+            app:onClickCommand="@{viewModel.testModeOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/btn_shopmanager"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="商品管理"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            app:layout_constraintTop_toBottomOf="@id/btn_testmode"
+            app:onClickCommand="@{viewModel.shopmanagerOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/btn_salerecord"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="销售记录"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            app:layout_constraintTop_toBottomOf="@id/btn_shopmanager"
+            app:onClickCommand="@{viewModel.salerecordOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/btn_serialport"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="串口通信收发数据展示"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            app:layout_constraintTop_toBottomOf="@id/btn_salerecord"
+            app:onClickCommand="@{viewModel.serialportOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/btn_socket"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="后台测试"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            app:layout_constraintTop_toBottomOf="@id/btn_serialport"
+            app:onClickCommand="@{viewModel.mqttOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

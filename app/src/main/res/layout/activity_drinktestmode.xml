@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+ 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.uroica.drinkmachine.ui.factorymode.testmode.DrinkTestModeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/c"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_cabinet_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/rectangle_bg"
+            android:orientation="vertical"
+            android:padding="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/tv_cur_cabinet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="柜子状态"
+                android:textColor="@color/white"
+                android:textSize="40sp" />
+
+            <TextView
+                android:id="@+id/tv_cur_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.curTemp}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_control_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.curControlStatus}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_shipmentChannelD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.shipmentChannelD}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_channelResult"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.channelResult}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
+
+            <TextView
+                android:id="@+id/tv_curMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.curMode}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_heatChannelD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.heatChannleD}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_up_door_open"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.upDoorOpen}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_up_door_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.upDoorClose}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_down_door_open"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.downDoorOpen}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_down_door_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.downDoorClose}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_copmressorS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.copmressorS}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_copmressorA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.copmressorA}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_microwaveS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.microwaveS}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_microwaveA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.microwaveA}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_serialport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="串口参数：--"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_shipment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:text="测试机器出货:"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp"
+            app:layout_constraintTop_toBottomOf="@id/ll_cabinet_status"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/tv_setShipmentMode"
+            style="@style/TestModeTextForHeat"
+            android:layout_marginLeft="80dp"
+            android:text="※ 加热装置："
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_shipment"
+            tools:ignore="MissingConstraints" />
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:id="@+id/ll_mode"
+            app:layout_constraintTop_toBottomOf="@id/tv_setShipmentMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="120dp"
+            android:layout_marginRight="120dp"
+            tools:ignore="MissingConstraints">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:onClickCommand="@{viewModel.testHeartOnClickCommand}"
+            android:text="测试加热装置"
+            android:background="@drawable/rectangle_bg"
+            tools:ignore="MissingConstraints" />
+        <TextView
+            android:text="@={viewModel.upDoorStatus}"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            app:onClickCommand="@{viewModel.upDoorOnClickCommand}"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            tools:ignore="MissingConstraints" />
+        <TextView
+            android:text="@={viewModel.downDoorStatus}"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            app:onClickCommand="@{viewModel.downDoorOnClickCommand}"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:background="@drawable/rectangle_bg"
+            tools:ignore="MissingConstraints" />
+        </LinearLayout>
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_heatTime1"-->
+<!--            style="@style/TestModeTextForHeat"-->
+<!--            android:layout_marginLeft="80dp"-->
+<!--            android:text="※ 商品1加热时间："-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/ll_mode"-->
+<!--            tools:ignore="MissingConstraints" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/et_heatTime1"-->
+<!--            style="@style/TestModeEdittext"-->
+<!--            android:maxLength="3"-->
+<!--            android:text="@={viewModel.heatTime1}"-->
+<!--            app:layout_constraintBaseline_toBaselineOf="@+id/tv_heatTime1"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/tv_heatTime1" />-->
+<!--        <TextView-->
+<!--            android:id="@+id/tv_heatTime2"-->
+<!--            style="@style/TestModeTextForHeat"-->
+<!--            android:layout_marginLeft="80dp"-->
+<!--            android:text="※ 商品2加热时间："-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_heatTime1"-->
+<!--            tools:ignore="MissingConstraints" />-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/et_heatTime2"-->
+<!--            style="@style/TestModeEdittext"-->
+<!--            android:maxLength="3"-->
+<!--            android:text="@={viewModel.heatTime2}"-->
+<!--            app:layout_constraintBaseline_toBaselineOf="@+id/tv_heatTime2"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/tv_heatTime2" />-->
+
+        <TextView
+            android:id="@+id/tv_only_shipment"
+            style="@style/TestModeTextForHeat"
+            android:layout_marginLeft="80dp"
+            android:text="※ 单货道出货   货道："
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_mode"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/et_channel"
+            style="@style/TestModeEdittext"
+            android:text="@={viewModel.channelId}"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_only_shipment"
+            app:layout_constraintLeft_toRightOf="@id/tv_only_shipment" />
+
+        <TextView
+            android:id="@+id/tv_go2shipment"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:text="测试"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_only_shipment"
+            app:layout_constraintLeft_toRightOf="@id/et_channel"
+            app:onClickCommand="@{viewModel.go2OnlyShipmentOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/tv_floor_shipment"
+            style="@style/TestModeTextForHeat"
+            android:layout_marginLeft="80dp"
+            android:text="※ 整层出货   层数："
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_go2shipment"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/et_floor"
+            style="@style/TestModeEdittext"
+            android:text="@={viewModel.floorId}"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_floor_shipment"
+            app:layout_constraintLeft_toRightOf="@+id/tv_floor_shipment" />
+
+        <TextView
+            android:id="@+id/tv_go2FloorShipment"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="测试"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_floor"
+            app:layout_constraintLeft_toRightOf="@id/et_floor"
+            app:onClickCommand="@{viewModel.go2FloorShipmentOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <LinearLayout
+            android:id="@+id/ll_all"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="100dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_go2FloorShipment"
+            android:layout_height="50dp">
+        <TextView
+            android:id="@+id/tv_all_shipment"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="※ 全部货道出货测试"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/white"
+
+            android:textSize="25sp"
+            app:onClickCommand="@{viewModel.go2AllShipmentOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/tv_cancle_shipment"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:background="@drawable/rectangle_bg"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="※ 停止出货"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:onClickCommand="@{viewModel.go2CancleShipmentOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_set_curTemp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:text="设置当前柜号（主板）温度:"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp"
+            app:layout_constraintTop_toBottomOf="@id/ll_all"
+            tools:ignore="MissingConstraints" />
+
+        <RadioGroup
+            android:id="@+id/rg_temp_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_set_curTemp"
+            app:onCheckedChangedCommand="@{viewModel.tempModeOnCheckedChangedCommand}"
+            tools:ignore="MissingConstraints">
+
+            <RadioButton
+                android:id="@+id/rb_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="常温"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25sp" />
+
+            <RadioButton
+                android:id="@+id/rb_cold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:checked="true"
+                android:text="制冷"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25sp" />
+
+            <RadioButton
+                android:id="@+id/rb_hot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="加热"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25sp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_temp"
+            style="@style/TestModeTextForHeat"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="30dp"
+            android:text="※ 设置温度"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rg_temp_mode"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/et_temp"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:digits="-1234567890."
+            android:gravity="center"
+            android:inputType="number"
+            android:text="@={viewModel.temp}"
+            android:theme="@style/MyEditTextLineColor"
+            android:textSize="30sp"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_temp"
+            app:layout_constraintLeft_toRightOf="@id/tv_temp" />
+
+        <TextView
+            android:id="@+id/tv_setTemp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="设置"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_temp"
+            app:layout_constraintLeft_toRightOf="@id/et_temp"
+            app:onClickCommand="@{viewModel.setTempOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/tv_clear"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="100dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="※ 清除微波炉故障"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintTop_toBottomOf="@id/tv_temp"
+            app:onClickCommand="@{viewModel.clearOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+
+
+        <TextView
+            android:id="@+id/tv_heart"
+            style="@style/TestModeTextForHeat"
+            android:text="※ 设置心跳时间"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_clear"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/et_heart"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:digits="-1234567890"
+            android:gravity="center"
+            android:inputType="number"
+            android:text="@={viewModel.heart}"
+            android:textSize="30sp"
+            android:textColor="@color/colorPrimary"
+            android:theme="@style/MyEditTextLineColor"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_heart"
+            app:layout_constraintLeft_toRightOf="@id/tv_heart" />
+
+        <TextView
+            android:id="@+id/tv_setHeart"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/rectangle_bg"
+            android:gravity="center"
+            android:text="设置"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/et_heart"
+            app:layout_constraintLeft_toRightOf="@id/et_heart"
+            app:onClickCommand="@{viewModel.setHeartOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/tv_log"
+            style="@style/TestModeTextForHeat"
+            android:text="※ 设置日志开关"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_heart"
+            tools:ignore="MissingConstraints" />
+        <Switch
+            android:id="@+id/switch_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/switch_custom_thumb_selector"
+            android:track="@drawable/switch_custom_track_selector"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_log"
+            app:layout_constraintLeft_toRightOf="@id/tv_log"
+            android:layout_marginLeft="30dp"
+            tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/tv_halfcir"
+            style="@style/TestModeTextForHeat"
+            android:text="※ 设置掉货检测"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_log"
+            app:layout_constraintLeft_toRightOf="@id/switch_log"
+            tools:ignore="MissingConstraints" />
+        <Switch
+            android:id="@+id/switch_halfcir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/switch_custom_thumb_selector"
+            android:track="@drawable/switch_custom_track_selector"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_halfcir"
+            app:layout_constraintLeft_toRightOf="@id/tv_halfcir"
+            android:layout_marginLeft="30dp"
+            app:onCheckedChangeCommand="@{viewModel.setHalfCirOnClickCommand}"
+            tools:ignore="MissingConstraints" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_log"
+            tools:ignore="MissingConstraints">
+            <TextView
+                android:id="@+id/tv_volumeadd"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_bg"
+                android:gravity="center"
+                android:text="音量 + "
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:layout_marginRight="10dp"
+                app:onClickCommand="@{viewModel.setVolumeAddOnClickCommand}"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/tv_volumeplus"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_bg"
+                android:gravity="center"
+                android:text="音量 - "
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:layout_marginLeft="10dp"
+                app:onClickCommand="@{viewModel.setVolumePlusOnClickCommand}"
+                tools:ignore="MissingConstraints" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

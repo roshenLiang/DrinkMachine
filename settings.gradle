@@ -1,0 +1,4 @@
+include ':component_mqtt'
+include ':mvvmhabit'
+include ':app'
+rootProject.name = "Drink"
