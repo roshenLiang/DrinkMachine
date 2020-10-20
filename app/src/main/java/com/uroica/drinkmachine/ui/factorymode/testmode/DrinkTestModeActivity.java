@@ -7,28 +7,37 @@ import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.uroica.drinkmachine.BR;
 import com.uroica.drinkmachine.R;
+import com.uroica.drinkmachine.adapter.TestModeCabinetAdapter;
 import com.uroica.drinkmachine.constant.SharePConstant;
 import com.uroica.drinkmachine.databinding.ActivityDrinktestmodeBinding;
 import com.uroica.drinkmachine.greement.AgreementManager;
 import com.uroica.drinkmachine.util.SharedPreferenceUtil;
+import com.uroica.drinkmachine.view.Transformer;
 
+import github.hellocsl.layoutmanager.gallery.GalleryLayoutManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 
 public class DrinkTestModeActivity extends BaseActivity<ActivityDrinktestmodeBinding, DrinkTestModeViewModel> {
+    RecyclerView ryCabinet;
+    TextView tvCurCabinet;
     //安卓板的串口名
     String deviceAddress = "";
     //波特率
     String baudRate = "";
     int machine_type;
+    //主副柜数量
+    int cabinetNum=1;
 
     boolean openSerialPortResult=false;
     @Override
@@ -47,14 +56,12 @@ public class DrinkTestModeActivity extends BaseActivity<ActivityDrinktestmodeBin
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         BarUtils.setStatusBarVisibility(this, false);
         SharedPreferenceUtil.initSharedPreferenc(this);
+        ryCabinet = binding.ryCabinet;
+        tvCurCabinet = binding.tvCurCabinet;
         machine_type = SharedPreferenceUtil.getIntData(SharePConstant.PARAM_MACHINE_TYPE_INDEX);
         deviceAddress = SharedPreferenceUtil.getStrData(SharePConstant.PARAM_SERIALPORT_DEVICE);
         baudRate = SharedPreferenceUtil.getStrData(SharePConstant.PARAM_SERIALPORT_BAUDRATE);
 
-        String faultdoor=SharedPreferenceUtil.getStrData(SharePConstant.FAULT_DOOR);
-        String faultshipment=SharedPreferenceUtil.getStrData(SharePConstant.FAULT_SHIPMENT);
-        viewModel.setFaultDoor(faultdoor);
-        viewModel.setFaultShipment(faultshipment);
 
         if ((deviceAddress.equals("")) && (baudRate.equals(""))) {
             deviceAddress = "沒设置";
@@ -63,11 +70,8 @@ public class DrinkTestModeActivity extends BaseActivity<ActivityDrinktestmodeBin
         binding.tvSerialport.setText("串口名：" + deviceAddress + " 波特率：" + baudRate);
         //打开串口
         openSerialPortResult=  AgreementManager.Companion.getInstance().openSerial(this);
-//        if(openSerialPortResult){
-//            //首次查询主柜状态 轮询
-//            AgreementManager.Companion.getInstance().checkCabinet(1);
-//            AgreementManager.Companion.getInstance().startLoopCheckCabinet();
-//        }
+        cabinetNum=SharedPreferenceUtil.getIntData(SharePConstant.PARAM_MACHINE_CABINET_NUM,1);
+        initAdapter();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -87,6 +91,13 @@ public class DrinkTestModeActivity extends BaseActivity<ActivityDrinktestmodeBin
         } else {
             binding.switchLog.setChecked(true);
         }
+
+        int lostgoodSwitch = SharedPreferenceUtil.getIntData(SharePConstant.LOSTGOOD_SWITCH, 1);//就是关
+        if (lostgoodSwitch == 0) {
+            binding.switchHalfcir.setChecked(false);
+        } else {
+            binding.switchHalfcir.setChecked(true);
+        }
         binding.switchLog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -96,6 +107,40 @@ public class DrinkTestModeActivity extends BaseActivity<ActivityDrinktestmodeBin
                 } else {
                     ToastUtils.showShort("关");
                     SharedPreferenceUtil.saveData(SharePConstant.LOG_SWITCH,0);
+                }
+            }
+        });
+        binding.switchHalfcir.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    ToastUtils.showShort("开");
+                    SharedPreferenceUtil.saveData(SharePConstant.LOSTGOOD_SWITCH,1);
+                } else {
+                    ToastUtils.showShort("关");
+                    SharedPreferenceUtil.saveData(SharePConstant.LOSTGOOD_SWITCH,0);
+                }
+            }
+        });
+    }
+
+    private void initAdapter() {
+        GalleryLayoutManager manager = new GalleryLayoutManager(GalleryLayoutManager.HORIZONTAL);
+        manager.attach(ryCabinet);
+        //设置滑动缩放效果
+        manager.setItemTransformer(new Transformer());
+        ryCabinet.setAdapter(new TestModeCabinetAdapter(this, cabinetNum));
+        manager.setOnItemSelectedListener(new GalleryLayoutManager.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(RecyclerView recyclerView, View view, int i) {
+                viewModel.clearStatus();
+                viewModel.setCurMainBoard(i+1);
+                tvCurCabinet.setText("当前柜号(主板)为:" + (i + 1));
+                //开启轮询
+                if(openSerialPortResult){
+                    AgreementManager.Companion.getInstance().putMachineBoardNum(cabinetNum);
+                    AgreementManager.Companion.getInstance().stopLoopCheckCabinet();
+                    AgreementManager.Companion.getInstance().startLoopCheckCabinet();
                 }
             }
         });

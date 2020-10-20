@@ -25,22 +25,23 @@ public class ShopManagerDBDao extends AbstractDao<ShopManagerDB, Long> {
      */
     public static class Properties {
         public final static Property Sid = new Property(0, Long.class, "Sid", true, "_id");
-        public final static Property StockNum = new Property(1, String.class, "StockNum", false, "StockNum");
-        public final static Property ChannleID = new Property(2, String.class, "ChannleID", false, "ChannleID");
-        public final static Property Combination = new Property(3, String.class, "Combination", false, "Combination");
-        public final static Property ChannelFault = new Property(4, String.class, "ChannelFault", false, "ChannelFault");
-        public final static Property DeviceID = new Property(5, String.class, "DeviceID", false, "DeviceID");
-        public final static Property ProductID = new Property(6, String.class, "ProductID", false, "ProductID");
-        public final static Property ProductName = new Property(7, String.class, "ProductName", false, "ProductName");
-        public final static Property EnName = new Property(8, String.class, "EnName", false, "EnName");
-        public final static Property Points = new Property(9, String.class, "Points", false, "Points");
-        public final static Property Price = new Property(10, String.class, "Price", false, "Price");
-        public final static Property CB = new Property(11, String.class, "CB", false, "CB");
-        public final static Property Detail = new Property(12, String.class, "Detail", false, "Detail");
-        public final static Property Store = new Property(13, String.class, "Store", false, "Store");
-        public final static Property ListIndex = new Property(14, String.class, "ListIndex", false, "ListIndex");
-        public final static Property ImgURL = new Property(15, String.class, "ImgURL", false, "ImgURL");
-        public final static Property ID = new Property(16, Long.class, "ID", false, "ID");
+        public final static Property CabinetID = new Property(1, int.class, "CabinetID", false, "CabinetID");
+        public final static Property StockNum = new Property(2, String.class, "StockNum", false, "StockNum");
+        public final static Property ChannleID = new Property(3, String.class, "ChannleID", false, "ChannleID");
+        public final static Property Combination = new Property(4, String.class, "Combination", false, "Combination");
+        public final static Property ChannelFault = new Property(5, String.class, "ChannelFault", false, "ChannelFault");
+        public final static Property DeviceID = new Property(6, String.class, "DeviceID", false, "DeviceID");
+        public final static Property ProductID = new Property(7, String.class, "ProductID", false, "ProductID");
+        public final static Property ProductName = new Property(8, String.class, "ProductName", false, "ProductName");
+        public final static Property EnName = new Property(9, String.class, "EnName", false, "EnName");
+        public final static Property Points = new Property(10, String.class, "Points", false, "Points");
+        public final static Property Price = new Property(11, String.class, "Price", false, "Price");
+        public final static Property CB = new Property(12, String.class, "CB", false, "CB");
+        public final static Property Detail = new Property(13, String.class, "Detail", false, "Detail");
+        public final static Property Store = new Property(14, String.class, "Store", false, "Store");
+        public final static Property ListIndex = new Property(15, String.class, "ListIndex", false, "ListIndex");
+        public final static Property ImgURL = new Property(16, String.class, "ImgURL", false, "ImgURL");
+        public final static Property ID = new Property(17, Long.class, "ID", false, "ID");
     }
 
 
@@ -57,22 +58,23 @@ public class ShopManagerDBDao extends AbstractDao<ShopManagerDB, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SHOP_MANAGER_DB\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: Sid
-                "\"StockNum\" TEXT," + // 1: StockNum
-                "\"ChannleID\" TEXT," + // 2: ChannleID
-                "\"Combination\" TEXT," + // 3: Combination
-                "\"ChannelFault\" TEXT," + // 4: ChannelFault
-                "\"DeviceID\" TEXT," + // 5: DeviceID
-                "\"ProductID\" TEXT," + // 6: ProductID
-                "\"ProductName\" TEXT," + // 7: ProductName
-                "\"EnName\" TEXT," + // 8: EnName
-                "\"Points\" TEXT," + // 9: Points
-                "\"Price\" TEXT," + // 10: Price
-                "\"CB\" TEXT," + // 11: CB
-                "\"Detail\" TEXT," + // 12: Detail
-                "\"Store\" TEXT," + // 13: Store
-                "\"ListIndex\" TEXT," + // 14: ListIndex
-                "\"ImgURL\" TEXT," + // 15: ImgURL
-                "\"ID\" INTEGER);"); // 16: ID
+                "\"CabinetID\" INTEGER NOT NULL ," + // 1: CabinetID
+                "\"StockNum\" TEXT," + // 2: StockNum
+                "\"ChannleID\" TEXT," + // 3: ChannleID
+                "\"Combination\" TEXT," + // 4: Combination
+                "\"ChannelFault\" TEXT," + // 5: ChannelFault
+                "\"DeviceID\" TEXT," + // 6: DeviceID
+                "\"ProductID\" TEXT," + // 7: ProductID
+                "\"ProductName\" TEXT," + // 8: ProductName
+                "\"EnName\" TEXT," + // 9: EnName
+                "\"Points\" TEXT," + // 10: Points
+                "\"Price\" TEXT," + // 11: Price
+                "\"CB\" TEXT," + // 12: CB
+                "\"Detail\" TEXT," + // 13: Detail
+                "\"Store\" TEXT," + // 14: Store
+                "\"ListIndex\" TEXT," + // 15: ListIndex
+                "\"ImgURL\" TEXT," + // 16: ImgURL
+                "\"ID\" INTEGER);"); // 17: ID
     }
 
     /** Drops the underlying database table. */
@@ -89,85 +91,86 @@ public class ShopManagerDBDao extends AbstractDao<ShopManagerDB, Long> {
         if (Sid != null) {
             stmt.bindLong(1, Sid);
         }
+        stmt.bindLong(2, entity.getCabinetID());
  
         String StockNum = entity.getStockNum();
         if (StockNum != null) {
-            stmt.bindString(2, StockNum);
+            stmt.bindString(3, StockNum);
         }
  
         String ChannleID = entity.getChannleID();
         if (ChannleID != null) {
-            stmt.bindString(3, ChannleID);
+            stmt.bindString(4, ChannleID);
         }
  
         String Combination = entity.getCombination();
         if (Combination != null) {
-            stmt.bindString(4, Combination);
+            stmt.bindString(5, Combination);
         }
  
         String ChannelFault = entity.getChannelFault();
         if (ChannelFault != null) {
-            stmt.bindString(5, ChannelFault);
+            stmt.bindString(6, ChannelFault);
         }
  
         String DeviceID = entity.getDeviceID();
         if (DeviceID != null) {
-            stmt.bindString(6, DeviceID);
+            stmt.bindString(7, DeviceID);
         }
  
         String ProductID = entity.getProductID();
         if (ProductID != null) {
-            stmt.bindString(7, ProductID);
+            stmt.bindString(8, ProductID);
         }
  
         String ProductName = entity.getProductName();
         if (ProductName != null) {
-            stmt.bindString(8, ProductName);
+            stmt.bindString(9, ProductName);
         }
  
         String EnName = entity.getEnName();
         if (EnName != null) {
-            stmt.bindString(9, EnName);
+            stmt.bindString(10, EnName);
         }
  
         String Points = entity.getPoints();
         if (Points != null) {
-            stmt.bindString(10, Points);
+            stmt.bindString(11, Points);
         }
  
         String Price = entity.getPrice();
         if (Price != null) {
-            stmt.bindString(11, Price);
+            stmt.bindString(12, Price);
         }
  
         String CB = entity.getCB();
         if (CB != null) {
-            stmt.bindString(12, CB);
+            stmt.bindString(13, CB);
         }
  
         String Detail = entity.getDetail();
         if (Detail != null) {
-            stmt.bindString(13, Detail);
+            stmt.bindString(14, Detail);
         }
  
         String Store = entity.getStore();
         if (Store != null) {
-            stmt.bindString(14, Store);
+            stmt.bindString(15, Store);
         }
  
         String ListIndex = entity.getListIndex();
         if (ListIndex != null) {
-            stmt.bindString(15, ListIndex);
+            stmt.bindString(16, ListIndex);
         }
  
         String ImgURL = entity.getImgURL();
         if (ImgURL != null) {
-            stmt.bindString(16, ImgURL);
+            stmt.bindString(17, ImgURL);
         }
  
         Long ID = entity.getID();
         if (ID != null) {
-            stmt.bindLong(17, ID);
+            stmt.bindLong(18, ID);
         }
     }
 
@@ -179,85 +182,86 @@ public class ShopManagerDBDao extends AbstractDao<ShopManagerDB, Long> {
         if (Sid != null) {
             stmt.bindLong(1, Sid);
         }
+        stmt.bindLong(2, entity.getCabinetID());
  
         String StockNum = entity.getStockNum();
         if (StockNum != null) {
-            stmt.bindString(2, StockNum);
+            stmt.bindString(3, StockNum);
         }
  
         String ChannleID = entity.getChannleID();
         if (ChannleID != null) {
-            stmt.bindString(3, ChannleID);
+            stmt.bindString(4, ChannleID);
         }
  
         String Combination = entity.getCombination();
         if (Combination != null) {
-            stmt.bindString(4, Combination);
+            stmt.bindString(5, Combination);
         }
  
         String ChannelFault = entity.getChannelFault();
         if (ChannelFault != null) {
-            stmt.bindString(5, ChannelFault);
+            stmt.bindString(6, ChannelFault);
         }
  
         String DeviceID = entity.getDeviceID();
         if (DeviceID != null) {
-            stmt.bindString(6, DeviceID);
+            stmt.bindString(7, DeviceID);
         }
  
         String ProductID = entity.getProductID();
         if (ProductID != null) {
-            stmt.bindString(7, ProductID);
+            stmt.bindString(8, ProductID);
         }
  
         String ProductName = entity.getProductName();
         if (ProductName != null) {
-            stmt.bindString(8, ProductName);
+            stmt.bindString(9, ProductName);
         }
  
         String EnName = entity.getEnName();
         if (EnName != null) {
-            stmt.bindString(9, EnName);
+            stmt.bindString(10, EnName);
         }
  
         String Points = entity.getPoints();
         if (Points != null) {
-            stmt.bindString(10, Points);
+            stmt.bindString(11, Points);
         }
  
         String Price = entity.getPrice();
         if (Price != null) {
-            stmt.bindString(11, Price);
+            stmt.bindString(12, Price);
         }
  
         String CB = entity.getCB();
         if (CB != null) {
-            stmt.bindString(12, CB);
+            stmt.bindString(13, CB);
         }
  
         String Detail = entity.getDetail();
         if (Detail != null) {
-            stmt.bindString(13, Detail);
+            stmt.bindString(14, Detail);
         }
  
         String Store = entity.getStore();
         if (Store != null) {
-            stmt.bindString(14, Store);
+            stmt.bindString(15, Store);
         }
  
         String ListIndex = entity.getListIndex();
         if (ListIndex != null) {
-            stmt.bindString(15, ListIndex);
+            stmt.bindString(16, ListIndex);
         }
  
         String ImgURL = entity.getImgURL();
         if (ImgURL != null) {
-            stmt.bindString(16, ImgURL);
+            stmt.bindString(17, ImgURL);
         }
  
         Long ID = entity.getID();
         if (ID != null) {
-            stmt.bindLong(17, ID);
+            stmt.bindLong(18, ID);
         }
     }
 
@@ -270,22 +274,23 @@ public class ShopManagerDBDao extends AbstractDao<ShopManagerDB, Long> {
     public ShopManagerDB readEntity(Cursor cursor, int offset) {
         ShopManagerDB entity = new ShopManagerDB( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // Sid
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // StockNum
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // ChannleID
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // Combination
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // ChannelFault
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // DeviceID
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // ProductID
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // ProductName
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // EnName
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // Points
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // Price
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // CB
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // Detail
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // Store
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // ListIndex
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // ImgURL
-            cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16) // ID
+            cursor.getInt(offset + 1), // CabinetID
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // StockNum
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // ChannleID
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // Combination
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // ChannelFault
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // DeviceID
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // ProductID
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // ProductName
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // EnName
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // Points
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // Price
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // CB
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // Detail
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // Store
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // ListIndex
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // ImgURL
+            cursor.isNull(offset + 17) ? null : cursor.getLong(offset + 17) // ID
         );
         return entity;
     }
@@ -293,22 +298,23 @@ public class ShopManagerDBDao extends AbstractDao<ShopManagerDB, Long> {
     @Override
     public void readEntity(Cursor cursor, ShopManagerDB entity, int offset) {
         entity.setSid(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setStockNum(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setChannleID(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setCombination(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setChannelFault(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setDeviceID(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setProductID(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setProductName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setEnName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setPoints(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPrice(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setCB(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setDetail(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setStore(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setListIndex(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setImgURL(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setID(cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16));
+        entity.setCabinetID(cursor.getInt(offset + 1));
+        entity.setStockNum(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setChannleID(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setCombination(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setChannelFault(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setDeviceID(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setProductID(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setProductName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setEnName(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setPoints(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setPrice(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setCB(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setDetail(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setStore(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setListIndex(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setImgURL(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setID(cursor.isNull(offset + 17) ? null : cursor.getLong(offset + 17));
      }
     
     @Override

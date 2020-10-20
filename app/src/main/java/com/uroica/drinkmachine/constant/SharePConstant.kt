@@ -16,7 +16,6 @@ class SharePConstant{
         const val  HEART_TIME = "heart_time"
         //日誌
         const val  LOG_SWITCH = "log_switch"
-        const val  FAULT_DOOR = "fault_door"
-        const val  FAULT_SHIPMENT = "fault_shipment"
+        const val  LOSTGOOD_SWITCH = "lostgood_switch"
     }
 }

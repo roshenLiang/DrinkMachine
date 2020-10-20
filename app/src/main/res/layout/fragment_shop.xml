@@ -20,7 +20,6 @@
             android:id="@+id/ry_shop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary" />
-
+            android:background="#C6C6C6" />
     </RelativeLayout>
 </layout>

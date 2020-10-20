@@ -83,7 +83,6 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:orientation="horizontal"
-            android:visibility="gone"
             tools:ignore="MissingConstraints">
             <TextView
                 android:layout_marginTop="10dp"
@@ -107,46 +106,6 @@
                 android:layout_height="38dp"/>
             <Button
                 android:id="@+id/btn_save_cabinet"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="保存"
-                android:textColor="@color/colorPrimaryDark"
-                android:background="@color/white"
-                android:layout_margin="10dp"
-                android:textSize="18sp" />
-        </LinearLayout>
-        <LinearLayout
-            android:gravity="center_vertical"
-            android:layout_marginTop="20dp"
-            android:background="@color/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@id/ll_cabinet"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:visibility="gone"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
-            <TextView
-                android:layout_marginTop="10dp"
-                android:id="@+id/tv_machine_type"
-                android:text="设备类型："
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="MissingConstraints" />
-            <Spinner
-                android:id="@+id/spinner_machine_type"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="38dp"
-                android:layout_margin="8dp"
-                android:background="@color/white"
-                android:textSize="18sp"
-                tools:entries="@array/machine_type"
-                tools:ignore="DuplicateIds" />
-            <Button
-                android:id="@+id/btn_save_machine_type"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"

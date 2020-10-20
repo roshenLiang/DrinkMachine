@@ -22,7 +22,9 @@ import com.uroica.drinkmachine.R;
 import com.uroica.drinkmachine.bean.CodeModel;
 import com.uroica.drinkmachine.bean.db.ShopManagerDB;
 import com.uroica.drinkmachine.bean.db.ShopModelDB;
+import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperHeatBean;
+import com.uroica.drinkmachine.constant.SharePConstant;
 import com.uroica.drinkmachine.databinding.FragmentPayBinding;
 import com.uroica.drinkmachine.db.CommonDaoUtils;
 import com.uroica.drinkmachine.db.DaoUtilsStore;
@@ -57,13 +59,11 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
     private ShopModelDB dataBean;
     boolean isChannelFault = false;
     boolean isWbFault = false;
-//    boolean isAllFault = false;
     CommonDaoUtils<ShopModelDB> shopDaoUtils;
     CommonDaoUtils<ShopManagerDB> shopManagerDBUtils;
-    LinkedList<String> combLinkedString;
-    String combString;
     boolean wxPay = false, aliPay = false;
     boolean fromMachine;
+    ShopManagerDB shopManagerDBInfo;//要出货的商品信息
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,8 +87,6 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         shopManagerDBUtils = DaoUtilsStore.getInstance().getShopManagerDBUtils();
         SharedPreferenceUtil.initSharedPreferenc(activity);
 
-        Log.i("数据库", "加热时间 " + dataBean.getHeartTime());
-
         mHandler = new Handler();
         initShowPro();
         initListen();
@@ -96,7 +94,6 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
     }
 
     void initShowPro() {
-        shopModel2Comb();
         BACK_NUM = 121000;
         isChannelFault = false;
         isWbFault = false;
@@ -118,21 +115,6 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         }
     }
 
-    private void shopModel2Comb() {
-        List<ShopManagerDB> s = shopManagerDBUtils.queryByQueryBuilder(ShopManagerDBDao.Properties.ProductID.eq(dataBean.getProductID()));
-        combString = s.get(0).getCombination();
-        String data;
-        Gson gson = new Gson();
-        if (combString.equals("1")) {
-            data = SharedPreferenceUtil.getStrData("comb1");
-        } else {
-            data = SharedPreferenceUtil.getStrData("comb2");
-        }
-        Type listType = new TypeToken<LinkedList<String>>() {
-        }.getType();
-        combLinkedString = gson.fromJson(data, listType);
-        Log.i("rrr", "combLinkedString=" + combLinkedString);
-    }
 
     boolean isShipmenting = false;//是否有出貨中
     boolean isShipmentResult = false;//是否有出貨結果
@@ -141,51 +123,7 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         AgreementManager.Companion.getInstance().setReceivedListener(new AgreementManager.onReceivedListener() {
             @Override
             public void OnListener(@NotNull String data) {
-//                LogUtils.file("云端数据", "Pay --接收到的数据= " + data);
-                final Bus_LooperHeatBean looperBean = new Bus_LooperHeatBean(data);
-                //机器出货故障
-                if (looperBean.getChannelDStatus() == 1 || looperBean.getChannelDStatus() == 2) {
-                    if (!isChannelFault) {
-                        //禁用货道
-                        int channelID = looperBean.getCurrent_Channel();
-                        ShopManagerDB s = shopManagerDBUtils.queryByQueryBuilder(ShopManagerDBDao.Properties.ChannleID.eq(String.valueOf(channelID))).get(0);
-                        s.setChannelFault("1");
-                        shopManagerDBUtils.update(s);
-                        //组合要移除
-                        for (int i = 0; i < Integer.valueOf(s.getStockNum()); i++) {
-                            Log.i("rrr", "故障 移除=" + String.valueOf(channelID));
-                            combLinkedString.remove(s.getChannleID());
-                        }
-                        //保存
-                        Gson gson = new Gson();
-                        String d = gson.toJson(combLinkedString);
-                        if (combString.equals("1")) {
-                            SharedPreferenceUtil.saveData("comb1", d);
-                        } else {
-                            SharedPreferenceUtil.saveData("comb2", d);
-                        }
-                    }
-                    isChannelFault = true;
-                }
-
-                if ( looperBean.getMicrowaveS() != 0&&!isWbFault) {
-//                    isAllFault = true;
-                    //微波炉故障 库存也要减少
-                    ShopManagerDB ss = shopManagerDBUtils.queryByQueryBuilder(ShopManagerDBDao.Properties.ChannleID.eq(combLinkedString.getFirst())).get(0);
-                    ss.setStockNum(String.valueOf(Integer.valueOf(ss.getStockNum()) - 1));
-                    shopManagerDBUtils.update(ss);
-                    //comb也要移除后保存
-                    combLinkedString.removeFirst();
-                    Gson gson = new Gson();
-                    String data2 = gson.toJson(combLinkedString);
-                    if (combString.equals("1")) {
-                        SharedPreferenceUtil.saveData("comb1", data2);
-                    } else {
-                        SharedPreferenceUtil.saveData("comb2", data2);
-                    }
-                    isWbFault=true;
-                }
-                //
+                final Bus_LooperDrinkBean looperBean = new Bus_LooperDrinkBean(data);
                 if (looperBean.getControl_state() == 1 && !isShipmenting) {
                     shipmenting();
                 } else if (looperBean.getControl_state() == 2 && isShipmenting && !isShipmentResult) {
@@ -202,7 +140,8 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
     }
 
 
-    public void sendShipment() {
+    public void sendShipment(final ShopManagerDB sdb) {
+        shopManagerDBInfo=sdb;
         if (isShipmentResult) {
             //在出货完成的时候，小程序那边突然又安排出货
             initShowPro();
@@ -210,67 +149,59 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                AgreementManager.Companion.getInstance().runHeatShipment(1, Integer.valueOf(combLinkedString.getFirst()), 0, Integer.valueOf(dataBean.getHeartTime()), 0, 0);
+                int lostGood=SharedPreferenceUtil.getIntData(SharePConstant.LOSTGOOD_SWITCH,1);
+                AgreementManager.Companion.getInstance().runDrinkShipment(shopManagerDBInfo.getCabinetID(), lostGood,Integer.valueOf(shopManagerDBInfo.getChannleID()));
             }
         }, 500);
     }
 
-
-    private void shipmentResult(final Bus_LooperHeatBean looperBean) {
+    private void shipmentResult(final Bus_LooperDrinkBean looperBean) {
         isShipmentResult = true;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (looperBean.getShipment_result() == 0) {
-                    finishShipmentCountDown();
+                if (looperBean.getResult_shipment() == 0) {
                     BACK_NUM = 6000;
                     Glide.with(getActivity()).load(R.mipmap.icon_shipmenttrue).transition(GenericTransitionOptions.with(R.anim.zoomin)).into(binding.ivShipmentStatus);
                     binding.tvShipmentStatus.setText("出货成功");
                     //减少库存
-                    ShopManagerDB ss = shopManagerDBUtils.queryByQueryBuilder(ShopManagerDBDao.Properties.ChannleID.eq(combLinkedString.getFirst())).get(0);
-                    ss.setStockNum(String.valueOf(Integer.valueOf(ss.getStockNum()) - 1));
-                    shopManagerDBUtils.update(ss);
-                    //comb也要移除后保存
-                    combLinkedString.removeFirst();
-                    Gson gson = new Gson();
-                    String data = gson.toJson(combLinkedString);
-                    if (combString.equals("1")) {
-                        SharedPreferenceUtil.saveData("comb1", data);
-                    } else {
-                        SharedPreferenceUtil.saveData("comb2", data);
-                    }
-                    startBackCountDown();
+                    shopManagerDBInfo.setStockNum(String.valueOf(Integer.valueOf(shopManagerDBInfo.getStockNum()) - 1));
+                    shopManagerDBUtils.update(shopManagerDBInfo);
                 } else {
-                    finishShipmentCountDown();
-                    shipmentFaildUI();
+                    BACK_NUM = 20000;
+                    Glide.with(getActivity()).load(R.mipmap.icon_shipmentfalse).transition(GenericTransitionOptions.with(R.anim.zoomin)).into(binding.ivShipmentStatus);
+                    if (isChannelFault)
+                        binding.tvShipmentStatus.setText("出货失败，机器故障，一小时之内自动退款");
+                    else
+                        binding.tvShipmentStatus.setText("出货失败，一小时之内自动退款");
                 }
-
+                startBackCountDown();
             }
         });
     }
 
-    void shipmentFaildUI() {
-        isShipmentResult = true;
-        BACK_NUM = 10000;
-        Glide.with(getActivity()).load(R.mipmap.icon_shipmentfalse).transition(GenericTransitionOptions.with(R.anim.zoomin)).into(binding.ivShipmentStatus);
-        if (isChannelFault)
-            binding.tvShipmentStatus.setText("出货失败，机器故障，一小时之内自动退款");
-        else
-            binding.tvShipmentStatus.setText("出货失败，一小时之内自动退款");
-        startBackCountDown();
-    }
+//    void shipmentFaildUI() {
+//        isShipmentResult = true;
+//        BACK_NUM = 10000;
+//        Glide.with(getActivity()).load(R.mipmap.icon_shipmentfalse).transition(GenericTransitionOptions.with(R.anim.zoomin)).into(binding.ivShipmentStatus);
+//        if (isChannelFault)
+//            binding.tvShipmentStatus.setText("出货失败，机器故障，一小时之内自动退款");
+//        else
+//            binding.tvShipmentStatus.setText("出货失败，一小时之内自动退款");
+//        startBackCountDown();
+//    }
 
     private void shipmenting() {
         isShipmenting = true;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                BACK_NUM = Integer.valueOf(dataBean.getHeartTime()) * 1000 + 15000;
-                startBackCountDown();
+                BACK_NUM = 10000;
                 binding.llPayInfo.setVisibility(View.GONE);
                 binding.llPayResult.setVisibility(View.VISIBLE);
                 Glide.with(getActivity()).load(R.mipmap.icon_shipmenting).transition(GenericTransitionOptions.with(R.anim.zoomin)).into(binding.ivShipmentStatus);
                 binding.tvShipmentStatus.setText("请稍等，正在出货...");
+                startBackCountDown();
             }
         });
     }
@@ -281,26 +212,24 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
             @Override
             public void onTick(long millisUntilFinished) {
                 if (!isShipmenting) {
-                    if (binding.tvBack.getVisibility() != View.VISIBLE) {
+                    if(binding.tvBack.getVisibility()!=View.VISIBLE){
                         binding.tvBack.setVisibility(View.VISIBLE);
                     }
                     binding.tvBack.setText((int) (millisUntilFinished / 1000) + "s");
                 } else {
                     binding.tvBackResult.setText((int) (millisUntilFinished / 1000) + "s");
                 }
+
             }
 
             @Override
             public void onFinish() {
                 if (isShipmenting) {
                     binding.tvBackResult.setVisibility(View.GONE);
-                    if (isShipmentResult) {
+                    if(isShipmentResult){
                         activity.commitAllowingStateLoss(0);
-                    } else {
-                        //开启倒数10秒没收到就默认为出货失败
-                        startShipmentFailed();
                     }
-                } else {
+                }else{
                     activity.commitAllowingStateLoss(0);
                 }
             }
@@ -316,34 +245,6 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         }
     }
 
-    CountDownTimer shipmentFailedTimer;
-
-    public void startShipmentFailed() {
-        shipmentFailedTimer = new CountDownTimer(20000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        shipmentFaildUI();
-                    }
-                });
-            }
-        };
-        shipmentFailedTimer.start();
-    }
-
-    public void finishShipmentCountDown() {
-        if (shipmentFailedTimer != null) {
-            shipmentFailedTimer.cancel();
-            shipmentFailedTimer = null;
-        }
-    }
 
     public void getAliPay() {
         RetrofitHelper.getCode().getAliCode(dataBean.getProductName(), dataBean.getPrice(), dataBean.getProductID(), dataBean.getImgURL(), dataBean.getDetail(), deviceID)
@@ -423,6 +324,5 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         super.onDestroyView();
         AgreementManager.Companion.getInstance().setReceivedListener(null);
         finishBackCountDown();
-        finishShipmentCountDown();
     }
 }

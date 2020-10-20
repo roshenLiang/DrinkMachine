@@ -25,26 +25,25 @@ class AgreementManager private constructor() {
     var curMainBoardIndex: Int = 1
 
 
-//    //主板数量
-//    var maxMachine: Int = 1
+    //主板数量
+    var maxMachine: Int = 1
 
     //延迟发送
     var delaySend: Long =0
     var mHandler: Handler = Handler();
 
     var tempReceiveData: String = "";
-//    var tempSendData: String = "";
-//    var isReceiveRunShipment :Boolean =true;//判断是否接受发送出货 防止机器漏收现象
+    var tempSendData: String = "";
 
     var isReceiveTemp: Boolean = true;//判断是否接受 防止机器漏收现象
     var isReceiveRunShipment: Boolean = true;//判断是否接受 防止机器漏收现象
     var isReceiveACK: Boolean = true;//判断是否接受 防止机器漏收现象
-    var isReceiveWB: Boolean = true;//判断是否接受 防止机器漏收现象
+//    var isReceiveWB: Boolean = true;//判断是否接受 防止机器漏收现象
 
     var againRunSetTemp: ByteArray = byteArrayOf(6)
-    var againRunDrinkShipment:ByteArray= byteArrayOf(9)
+    var againRunDrinkShipment:ByteArray= byteArrayOf(6)
     var againRunACK: ByteArray = byteArrayOf(4)
-    var againRunWB: ByteArray = byteArrayOf(4)
+//    var againRunWB: ByteArray = byteArrayOf(4)
 
     //串口管理类
     private var mSerialPortManager: SerialPortManager? = null
@@ -59,13 +58,13 @@ class AgreementManager private constructor() {
         }
     }
 
-//
-//    /*
-//           设置机器主副柜数量
-//        */
-//    fun putMachineBoardNum(type: Int) {
-//        maxMachine = type;
-//    }
+
+    /*
+           设置机器主副柜数量
+        */
+    fun putMachineBoardNum(type: Int) {
+        maxMachine = type;
+    }
 
 
     /**
@@ -97,25 +96,25 @@ class AgreementManager private constructor() {
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 checkCabinet(curMainBoardIndex)
-//                curMainBoardIndex++;
-//                if (curMainBoardIndex > maxMachine) {
-//                    curMainBoardIndex = 1;
-//                }
+                curMainBoardIndex++;
+                if (curMainBoardIndex > maxMachine) {
+                    curMainBoardIndex = 1;
+                }
             }
         }, 200, 200)
     }
-    fun startLoopCheckCabinet( mainBoard: Int) {
-        stopLoopCheckCabinet();
-        Log.i("串口内容", "开启单轮询")
-        curMainBoardIndex = mainBoard;
-        //开启200ms轮询
-        timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                checkCabinet(curMainBoardIndex)
-            }
-        }, 200, 200)
-    }
+//    fun startLoopCheckCabinet( mainBoard: Int) {
+//        stopLoopCheckCabinet();
+//        Log.i("串口内容", "开启单轮询")
+//        curMainBoardIndex = mainBoard;
+//        //开启200ms轮询
+//        timer = Timer()
+//        timer.scheduleAtFixedRate(object : TimerTask() {
+//            override fun run() {
+//                checkCabinet(curMainBoardIndex)
+//            }
+//        }, 200, 200)
+//    }
 
     fun stopLoopCheckCabinet() {
         timer?.cancel()
@@ -163,37 +162,19 @@ class AgreementManager private constructor() {
      *
      *
      */
-    fun runHeatShipment(mode: Int, channle: Int, half: Int, heatTime: Int, upDoor: Int, downDoor: Int) {
+    fun runDrinkShipment(mainBoard: Int,half: Int, channle: Int) {
         isReceiveRunShipment=false;
         stopLoopCheckCabinet();
         Log.i("串口内容", "启动电机" + channle)
         LogUtils.file("启动电机", "runHeatShipment");
-        var heatShipmentAgreement = byteArrayOf(0x01, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00)
-        heatShipmentAgreement[2] = mode.toByte();
-        heatShipmentAgreement[3] = ChangeTool.HexToByte(Integer.toHexString(channle))
-        heatShipmentAgreement[4] = half.toByte()
-        heatShipmentAgreement[5] = ChangeTool.HexToByte(Integer.toHexString(heatTime))
-        val strBuilder = StringBuilder();
-        strBuilder.append("0000")
-        if (upDoor == 0) {
-            strBuilder.append("00")
-        } else if (upDoor == 1) {
-            strBuilder.append("01")
-        } else if (upDoor == 2) {
-            strBuilder.append("10")
-        }
-        if (downDoor == 0) {
-            strBuilder.append("00")
-        } else if (downDoor == 1) {
-            strBuilder.append("01")
-        } else if (downDoor == 2) {
-            strBuilder.append("10")
-        }
-        heatShipmentAgreement[6] = ChangeTool.bitToByte(strBuilder.toString())
-        var result = CRC16Util.calcCrc16ToBytes(heatShipmentAgreement, true)
+        var drinkShipmentAgreement = byteArrayOf(0x01, 0x05, 0x00, 0x00)
+        drinkShipmentAgreement[0] = mainBoard.toByte();
+        drinkShipmentAgreement[2] = half.toByte()
+        drinkShipmentAgreement[3] = ChangeTool.HexToByte(Integer.toHexString(channle))
+        var result = CRC16Util.calcCrc16ToBytes(drinkShipmentAgreement, true)
         //记得前提要打开串口
 //            mSerialPortManager?.sendBytes(result)
-        Log.i("roshen", "发送出货指令");
+        Log.i("roshen", "发送出货指令"+ChangeTool.ByteArrToHex(result));
         LogUtils.file("启动电机", "指令=" + ChangeTool.ByteArrToHex(result))
         mHandler.postDelayed(Runnable { mSerialPortManager?.sendBytes(result) }, delaySend)
         againRunDrinkShipment=result
@@ -218,23 +199,6 @@ class AgreementManager private constructor() {
         startBackCountDown()
     }
 
-    /**
-     * 微波炉故障一键清除
-     */
-    fun sendMicrowaveClear() {
-        isReceiveWB=false;
-        stopLoopCheckCabinet();
-        Log.i("串口内容", "微波炉故障一键清除")
-        var microwaveClear = byteArrayOf(0x01, 0x07)
-        var result = CRC16Util.calcCrc16ToBytes(microwaveClear, true)
-        LogUtils
-            .file("微波炉故障一键清除", "指令=" + ChangeTool.ByteArrToHex(result))
-        //记得前提要打开串口
-//        mSerialPortManager?.sendBytes(result)
-        mHandler.postDelayed(Runnable { mSerialPortManager?.sendBytes(result) }, delaySend)
-        againRunWB=result
-        startBackCountDown()
-    }
 
 
     var sendTimer: CountDownTimer=object :  CountDownTimer(2000, 1000){
@@ -258,11 +222,11 @@ class AgreementManager private constructor() {
                 mSerialPortManager?.sendBytes(againRunACK)
                 startBackCountDown()
             }
-            else if(!isReceiveWB){
-                LogUtils.file("微波", " 重新发送" + ChangeTool.ByteArrToHex(againRunWB))
-                mSerialPortManager?.sendBytes(againRunWB)
-                startBackCountDown()
-            }
+//            else if(!isReceiveWB){
+//                LogUtils.file("微波", " 重新发送" + ChangeTool.ByteArrToHex(againRunWB))
+//                mSerialPortManager?.sendBytes(againRunWB)
+//                startBackCountDown()
+//            }
         }
     }
     fun startBackCountDown() {
@@ -325,7 +289,6 @@ class AgreementManager private constructor() {
                 var newB = CRC16Util.calcCrc16ToBytes(sb, true)
                 if (newB != null) {
                     if (!tempReceiveData.equals(data) && ChangeTool.ByteArrToHex(newB).equals(data)) {
-                        LogUtils.file("接受到串口数据", " 验证后的数据= $data")
                         tempReceiveData = data;
                         data = data.trim().replace(" ", "")
 //                        if (data.length < 8) return;
@@ -333,6 +296,7 @@ class AgreementManager private constructor() {
                             data.subSequence(2, 4) == "03" -> {
                                 //轮询
                                     LogUtils.file("接受到串口数据", "轮询")
+                                    Log.i("接受到串口数据", "轮询")
                                  //0003010100030C0000D8F2F1
                                    var bs= Bus_LooperHeatBean(data)
                                     LogUtils.file("当前温度", "温度="+bs.real_Temp)
@@ -342,6 +306,7 @@ class AgreementManager private constructor() {
                                 isReceiveTemp=true
                                 finishBackCountDown()
                                 LogUtils.file("接受到串口数据", "溫度设置")
+                                Log.i("接受到串口数据", "溫度设置")
                                 //溫度更新
 //                                RxBus.getDefault().post(Bus_TempBean(data))
                                 sstartLoopCheckCabinet()
@@ -351,6 +316,7 @@ class AgreementManager private constructor() {
                                 finishBackCountDown()
                                 //启动电机
                                 LogUtils.file("接受到串口数据", "启动电机")
+                                Log.i("接受到串口数据", "启动电机")
 //                                finishBackCountDown()
 //                                isReceiveRunShipment=true;
 //                                RxBus.getDefault().post(Bus_ShipmentHeatBean(data))
@@ -363,15 +329,16 @@ class AgreementManager private constructor() {
                                 //收到ACK回复
                                 RxBus.getDefault().post(Bus_ACKBean())
                                 LogUtils.file("接受到串口数据", "收到ACK回复")
+                                Log.i("接受到串口数据", "收到ACK回复")
                             }
-                            data.subSequence(2, 4) == "07" -> {
-                                isReceiveWB=true
-                                finishBackCountDown()
-                                //收到微波炉故障一键清除
-                                LogUtils.file("接受到串口数据", "收到微波炉故障一键清除")
-                                sstartLoopCheckCabinet()
-                            }
-                            //回调
+//                            data.subSequence(2, 4) == "07" -> {
+//                                isReceiveWB=true
+//                                finishBackCountDown()
+//                                //收到微波炉故障一键清除
+//                                LogUtils.file("接受到串口数据", "收到微波炉故障一键清除")
+//                                sstartLoopCheckCabinet()
+//                            }
+//                            //回调
                         }
                         //回调
                         listener?.OnListener(data);
@@ -382,10 +349,11 @@ class AgreementManager private constructor() {
 
             override fun onDataSent(bytes: ByteArray?) {
                 val data: String = ChangeTool.ByteArrToHex(bytes)
-//                if (!tempSendData.equals(data)) {
-//                    tempSendData = data;
-//                Log.i("串口", "发送---->数据 --- " + data)
-//                }
+                if (!tempSendData.equals(data)) {
+                    tempSendData = data
+                    tempReceiveData=""
+                Log.i("串口", "发送---->数据 --- " + data)
+                }
             }
 
         });
@@ -398,6 +366,7 @@ class AgreementManager private constructor() {
         // 打开串口
         finishBackCountDown()
         tempReceiveData = "";
+        tempSendData="";
         mSerialPortManager = SerialPortManager.instance()
         mSerialPortManager?.closeSerialPort();
     }

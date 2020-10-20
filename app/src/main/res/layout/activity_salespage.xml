@@ -50,14 +50,14 @@
             android:name="com.uroica.drinkmachine.ui.fragment.ad.AdFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="6"
+            android:layout_weight="4"
             android:tag="ad"
             tools:ignore="MissingConstraints" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5">
+            android:layout_weight="7">
 
             <FrameLayout
                 android:id="@+id/fl"
@@ -73,8 +73,9 @@
                 android:visibility="gone"
                 android:background="@color/fault_bg">
                 <androidx.cardview.widget.CardView
+                    android:layout_centerInParent="true"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="650dp"
                     android:orientation="vertical"
                     app:cardElevation="2dp"
                     app:cardCornerRadius="30dp"
@@ -96,7 +97,7 @@
                 <TextView
                     android:id="@+id/tv_fault"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_below="@id/iv_fault"
                     android:layout_alignParentBottom="true"
                     android:background="@color/red2"

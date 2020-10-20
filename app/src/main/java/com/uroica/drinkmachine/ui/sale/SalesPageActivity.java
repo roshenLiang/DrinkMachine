@@ -33,6 +33,7 @@ import com.uroica.drinkmachine.bean.db.SaleRecordDB;
 import com.uroica.drinkmachine.bean.db.ShopManagerDB;
 import com.uroica.drinkmachine.bean.db.ShopModelDB;
 import com.uroica.drinkmachine.bean.rxbus.Bus_ACKBean;
+import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperHeatBean;
 import com.uroica.drinkmachine.constant.SharePConstant;
 import com.uroica.drinkmachine.databinding.ActivitySalespageBinding;
@@ -82,7 +83,7 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
 //    private long saleTime;//销售的时间
 //    private ShopModelDB record_shop;//销售的商品信息
     private boolean isAck = false;//控制進入一次
-    private Bus_LooperHeatBean bus_looperHeatBean;
+    private Bus_LooperDrinkBean bus_looperDrinkBean;
     //与服务器轮询 故障
     private String CONTROL_STATE="00"; //00空闲 01忙
     private String FAULT_STRING = "00000000";
@@ -104,12 +105,11 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         BarUtils.setStatusBarVisibility(this, false);
         deviceID = DeviceUtils.getAndroidID();
         deviceID = ChangeTool.codeAddOne(deviceID, 20).toUpperCase();
+        deviceID="00006D8893B746CB2B7F";
         binding.tvDeviceid.setText("设备号：" + deviceID);
         binding.tvDeviceid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                MyApplication.instance.setMachineFault(true);
-//                binding.tvFault.setVisibility(View.VISIBLE);
                 continuousClick(COUNTS, DURATION);
             }
         });
@@ -117,10 +117,6 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         binding.tvTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                MyApplication.instance.setMachineFault(false);
-//                binding.tvFault.setVisibility(View.GONE);
-//                ToastUtils.showShort(MQTT_SHIPMENT + "UROICA_3040506070809" + "00" + MQTT_END);
-//                sendData(MQTT_SHIPMENT + "UROICA_3040506070809" + "00" + MQTT_END);
             }
         });
         mFragments = new ArrayList<>();
@@ -128,12 +124,6 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         mFragments.add(new PayFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);
-//        serialOpenResult = AgreementManager.Companion.getInstance().openSerial(this);
-//        if (!serialOpenResult) {
-//                    binding.llFault.setVisibility(View.VISIBLE);
-//                    binding.tvFault.setText("串口打开失败！请设置串口参数");
-//        }
-//        connect();
     }
 
     @Override
@@ -143,6 +133,12 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         if (!serialOpenResult) {
             binding.llFault.setVisibility(View.VISIBLE);
             binding.tvFault.setText("串口打开失败！请设置串口参数");
+        }
+        else {
+            int mode = SharedPreferenceUtil.getIntData(SharePConstant.TEMP_MODE, 1);
+            int num = SharedPreferenceUtil.getIntData(SharePConstant.TEMP_NUM, 4);
+            AgreementManager.Companion.getInstance().setTemp(1, mode, String.valueOf(num));
+
         }
         connect();
     }
@@ -197,8 +193,6 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
             }else{
                 LogUtils.file("云端数据","发送= "+data);
             }
-
-
             tempStringLog=data;
         }
         MqttClientFactory.INSTANCE.getMqttClient().publishMsg(MQTT_TOPIC + deviceID + MQTT_REPLY, data);
@@ -228,11 +222,11 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
             shipmentBusiness(msg);
         }
     }
-    void updateAd(){
-       FragmentManager fragmentManager= getSupportFragmentManager();
-        AdFragment adFragment = (AdFragment) fragmentManager.findFragmentById(R.id.fm_adfragment);
-        adFragment.updateAd();
-    }
+//    void updateAd(){
+//       FragmentManager fragmentManager= getSupportFragmentManager();
+//        AdFragment adFragment = (AdFragment) fragmentManager.findFragmentById(R.id.fm_adfragment);
+//        adFragment.updateAd();
+//    }
 
     void shipmentBusiness(@NotNull String msg) {
         long saleTime = System.currentTimeMillis();
@@ -245,7 +239,7 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         DaoUtilsStore.getInstance().getSaleRecordDBUtils().insert(saleRecordDB);
 
         //机器在忙碌的时候 拒绝
-        if (bus_looperHeatBean.getControl_state() != 0) {
+        if (bus_looperDrinkBean.getControl_state() != 0) {
             sendData(MQTT_SHIPMENT + orderID + "00" + MQTT_END);
             ToastUtils.showLong("机器正在忙，请稍后再来");
             return;
@@ -259,18 +253,15 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
 
         //判断货存是否充足
         List<ShopManagerDB> s = DaoUtilsStore.getInstance().getShopManagerDBUtils().queryByQueryBuilder(ShopManagerDBDao.Properties.ProductID.eq(pid));
-        String  combString = s.get(0).getCombination();
-        String data;
-        Gson gson = new Gson();
-        if (combString.equals("1")) {
-            data = SharedPreferenceUtil.getStrData("comb1");
-        } else {
-            data = SharedPreferenceUtil.getStrData("comb2");
+        boolean isCheckStock = false;
+        ShopManagerDB smDB = null;//要出货到商品
+        for (ShopManagerDB sm : s) {
+            if (Integer.valueOf(sm.getStockNum()) > 1 && sm.getChannelFault().equals("0") && !isCheckStock) {
+                isCheckStock = true;
+                smDB = sm;
+            }
         }
-        Type listType = new TypeToken<LinkedList<String>>() {
-        }.getType();
-        List<String> combLinkedString = gson.fromJson(data, listType);
-        if(combLinkedString==null||combLinkedString.size()<1){
+        if (!isCheckStock) {
             sendData(MQTT_SHIPMENT + orderID + "00" + MQTT_END);
             ToastUtils.showLong("该商品货存不足！出货失败");
             return;
@@ -289,7 +280,7 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
             commitAllowingStateLoss(1, record_shop, false);
         }
         PayFragment currentFragment = (PayFragment) mFragments.get(fragmentIndex);
-        currentFragment.sendShipment();
+        currentFragment.sendShipment(smDB);
     }
 
     void registrationBusiness(@NotNull String msg) {
@@ -305,15 +296,7 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         } else {
             SharedPreferenceUtil.initSharedPreferenc(this);
             heart_time = SharedPreferenceUtil.getIntData(SharePConstant.HEART_TIME, 30);
-            int mode = SharedPreferenceUtil.getIntData(SharePConstant.TEMP_MODE, 1);
-            int num = SharedPreferenceUtil.getIntData(SharePConstant.TEMP_NUM, 4);
-            if(serialOpenResult){
-                //首次查询主柜状态 轮询
-//                AgreementManager.Companion.getInstance().checkCabinet(1);
-//                AgreementManager.Companion.getInstance().startLoopCheckCabinet();
-                AgreementManager.Companion.getInstance().setTemp(1, mode, String.valueOf(num));
 
-            }
 
 
             //开启心跳
@@ -335,22 +318,22 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
 
     @Override
     public void initViewObservable() {
-        viewModel.uc.loop.observe(this, new Observer<Bus_LooperHeatBean>() {
+        viewModel.uc.loop.observe(this, new Observer<Bus_LooperDrinkBean>() {
             @Override
-            public void onChanged(@androidx.annotation.Nullable Bus_LooperHeatBean looperHeatBean) {
-                bus_looperHeatBean = looperHeatBean;
-                if(looperHeatBean.getControl_state()==0&&CONTROL_STATE.equals("01")){
+            public void onChanged(@androidx.annotation.Nullable Bus_LooperDrinkBean looperDrinkBean) {
+                bus_looperDrinkBean = looperDrinkBean;
+                if(looperDrinkBean.getControl_state()==0&&CONTROL_STATE.equals("01")){
                     //机器空闲
                     CONTROL_STATE="00";
                     //马上发送心跳给服务器
                     sendData(MQTT_HEART +CONTROL_STATE+ "01"+ChangeTool.codeAddOne(Integer.toHexString(ChangeTool.bitToByte(FAULT_STRING)), 2) + "00" + MQTT_END);
-                }else if((looperHeatBean.getControl_state()==1||looperHeatBean.getControl_state()==2)&&CONTROL_STATE.equals("00")){
+                }else if((looperDrinkBean.getControl_state()==1||looperDrinkBean.getControl_state()==2)&&CONTROL_STATE.equals("00")){
                     CONTROL_STATE="01";
                     sendData(MQTT_HEART +CONTROL_STATE+ "01"+ ChangeTool.codeAddOne(Integer.toHexString(ChangeTool.bitToByte(FAULT_STRING)), 2) + "00" + MQTT_END);
                 }
                 //故障处理
-                initFault(looperHeatBean);
-                if (looperHeatBean.getControl_state() == 2 ) {
+//                initFault(looperHeatBean);
+                if (looperDrinkBean.getControl_state() == 2 ) {
 //                if (looperHeatBean.getControl_state() == 2 && !isAck) {
                     //这里会出现多次 看看是否需要修复
                     if (!FaultisSendAck) {
@@ -364,7 +347,7 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
                         if (recordDBS.size() > 0) {
                             s = (SaleRecordDB) recordDBS.get(0);
                         }
-                        if (looperHeatBean.getShipment_result() == 0) {
+                        if (looperDrinkBean.getResult_shipment() == 0) {
                             //出货成功
                             sendData(MQTT_SHIPMENT + orderID + "01" + MQTT_END);
                             if (s != null) {
@@ -393,62 +376,62 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         });
     }
 
-    private void initFault(@androidx.annotation.Nullable Bus_LooperHeatBean looperHeatBean) {
-        if (looperHeatBean.getCopmressorS() != 0 || looperHeatBean.getMicrowaveS() != 0
-                || looperHeatBean.getUp_door_close_status() != 0 || looperHeatBean.getUp_door_open_status() != 0
-                || looperHeatBean.getDown_door_close_status() != 0 || looperHeatBean.getDown_door_open_status() != 0) {
-            if (looperHeatBean.getCopmressorS() != 0) {
-                setFault("1", 2, false);
-                binding.tvFault.setText("压缩机故障");
-                FaultisSendAck = true;
-                binding.llFault.setVisibility(View.VISIBLE);
-            }
-            if (looperHeatBean.getMicrowaveS() != 0) {
-                setFault("1", 1, false);
-                binding.tvFault.setText("微波炉故障");
-                FaultisSendAck = true;
-                binding.llFault.setVisibility(View.VISIBLE);
-                //库存要减少
-
-            }
-            if (looperHeatBean.getUp_door_close_status() != 0) {
-                setFault("1", 5, false);
-                binding.tvFault.setText("上门关故障");
-                FaultisSendAck = true;
-                binding.llFault.setVisibility(View.VISIBLE);
-            }
-            if (looperHeatBean.getUp_door_open_status() != 0) {
-                setFault("1", 6, false);
-                binding.tvFault.setText("上门开故障");
-                FaultisSendAck = true;
-                binding.llFault.setVisibility(View.VISIBLE);
-            }
-            if (looperHeatBean.getDown_door_close_status() != 0) {
-                setFault("1", 3, false);
-                binding.tvFault.setText("下门关故障");
-                FaultisSendAck = true;
-                binding.llFault.setVisibility(View.VISIBLE);
-            }
-            if (looperHeatBean.getDown_door_open_status() != 0) {
-                setFault("1", 4, false);
-                binding.tvFault.setText("下门开故障");
-                FaultisSendAck = true;
-                binding.llFault.setVisibility(View.VISIBLE);
-            }
-
-        } else {
-            setFault("0", 0, true);
-            binding.llFault.setVisibility(View.GONE);
-            FaultisSendAck = false;
-        }
-
-        if (looperHeatBean.getReal_Temp() == -40||looperHeatBean.getReal_Temp() == 90) {
-            setFault("1", 0, false);
-            binding.tvFault.setText("温度故障");
-            FaultisSendAck = true;
-            binding.llFault.setVisibility(View.VISIBLE);
-        }
-    }
+//    private void initFault(@androidx.annotation.Nullable Bus_LooperHeatBean looperHeatBean) {
+//        if (looperHeatBean.getCopmressorS() != 0 || looperHeatBean.getMicrowaveS() != 0
+//                || looperHeatBean.getUp_door_close_status() != 0 || looperHeatBean.getUp_door_open_status() != 0
+//                || looperHeatBean.getDown_door_close_status() != 0 || looperHeatBean.getDown_door_open_status() != 0) {
+//            if (looperHeatBean.getCopmressorS() != 0) {
+//                setFault("1", 2, false);
+//                binding.tvFault.setText("压缩机故障");
+//                FaultisSendAck = true;
+//                binding.llFault.setVisibility(View.VISIBLE);
+//            }
+//            if (looperHeatBean.getMicrowaveS() != 0) {
+//                setFault("1", 1, false);
+//                binding.tvFault.setText("微波炉故障");
+//                FaultisSendAck = true;
+//                binding.llFault.setVisibility(View.VISIBLE);
+//                //库存要减少
+//
+//            }
+//            if (looperHeatBean.getUp_door_close_status() != 0) {
+//                setFault("1", 5, false);
+//                binding.tvFault.setText("上门关故障");
+//                FaultisSendAck = true;
+//                binding.llFault.setVisibility(View.VISIBLE);
+//            }
+//            if (looperHeatBean.getUp_door_open_status() != 0) {
+//                setFault("1", 6, false);
+//                binding.tvFault.setText("上门开故障");
+//                FaultisSendAck = true;
+//                binding.llFault.setVisibility(View.VISIBLE);
+//            }
+//            if (looperHeatBean.getDown_door_close_status() != 0) {
+//                setFault("1", 3, false);
+//                binding.tvFault.setText("下门关故障");
+//                FaultisSendAck = true;
+//                binding.llFault.setVisibility(View.VISIBLE);
+//            }
+//            if (looperHeatBean.getDown_door_open_status() != 0) {
+//                setFault("1", 4, false);
+//                binding.tvFault.setText("下门开故障");
+//                FaultisSendAck = true;
+//                binding.llFault.setVisibility(View.VISIBLE);
+//            }
+//
+//        } else {
+//            setFault("0", 0, true);
+//            binding.llFault.setVisibility(View.GONE);
+//            FaultisSendAck = false;
+//        }
+//
+//        if (looperHeatBean.getReal_Temp() == -40||looperHeatBean.getReal_Temp() == 90) {
+//            setFault("1", 0, false);
+//            binding.tvFault.setText("温度故障");
+//            FaultisSendAck = true;
+//            binding.llFault.setVisibility(View.VISIBLE);
+//        }
+//    }
 
 
     private void continuousClick(int count, long time) {
@@ -464,19 +447,19 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
     }
 
 
-    /*
-        0沒問題 1故障
-     */
-    public void setFault(String isFault, int index, boolean isNoPro) {
-        if (isNoPro) {
-            FAULT_STRING = "00000000";
-        } else {
-            String start = FAULT_STRING.substring(0, index);
-            String end = FAULT_STRING.substring(index+1, 8);
-            FAULT_STRING = start + isFault + end;
-        }
-
-    }
+//    /*
+//        0沒問題 1故障
+//     */
+//    public void setFault(String isFault, int index, boolean isNoPro) {
+//        if (isNoPro) {
+//            FAULT_STRING = "00000000";
+//        } else {
+//            String start = FAULT_STRING.substring(0, index);
+//            String end = FAULT_STRING.substring(index+1, 8);
+//            FAULT_STRING = start + isFault + end;
+//        }
+//
+//    }
 
     //隐藏所有Fragment
     private void hideAllFragment() {

@@ -26,6 +26,7 @@ import com.uroica.drinkmachine.db.DaoUtilsStore;
 import com.uroica.drinkmachine.gen.ShopModelDBDao;
 import com.uroica.drinkmachine.greement.AgreementManager;
 import com.uroica.drinkmachine.rxnetwork.RetrofitHelper;
+import com.uroica.drinkmachine.ui.factorymode.FactoryModeActivity;
 import com.uroica.drinkmachine.ui.sale.SalesPageActivity;
 import com.uroica.drinkmachine.util.ChangeTool;
 import com.uroica.drinkmachine.util.SharedPreferenceUtil;
@@ -49,7 +50,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     CommonDaoUtils<ShopModelDB> shopDaoUtils;
     CommonDaoUtils<ShopManagerDB> shopManagerDBUtils;
     Handler mHandler;
-
+    boolean cabinetNumChange = false;
 
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -80,10 +81,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     public void doThings() {
         initLog();
 //        //请求商品 -->更新到数据库-->商品管理这块
+        cabinetNumChange = getIntent().getBooleanExtra("cabinetNumChange", false);
         AgreementManager.Companion.getInstance().closeSerialPort();
         deviceID = DeviceUtils.getAndroidID();
         deviceID = ChangeTool.codeAddOne(deviceID, 20).toUpperCase();
-//        deviceID="0000836E3F0289BD0C3B";
+        deviceID="00006D8893B746CB2B7F";
         shopDaoUtils = DaoUtilsStore.getInstance().getShopDaoUtils();
         shopManagerDBUtils = DaoUtilsStore.getInstance().getShopManagerDBUtils();
         binding.tvDeviceid.setText("设备号：" + deviceID);
@@ -113,7 +115,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
 
     public void getShop() {
-        RetrofitHelper.getShop().getShop("1", "2", deviceID)
+        RetrofitHelper.getShop().getShop("1", "10", deviceID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ShopModel>() {
@@ -123,6 +125,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
 
                     @Override
                     public void onNext(ShopModel shopModel) {
+
                         if(Integer.valueOf(shopModel.getRet())<1){
                             binding.tv.setText("沒商品数据，需要后台登记");
                             return;
@@ -146,7 +149,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                                 }
                             }
                         }
-
                         //把数据保存到数据库中
                         for (int i = 0; i < shopModel.getData().size(); i++) {
                             ShopModel.DataBean dataBean = shopModel.getData().get(i);
@@ -154,27 +156,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                             DecimalFormat df = new DecimalFormat("#0.00");
                             dataBean.setPrice(df.format(Float.valueOf(dataBean.getPrice())));
                             //处理pid
-                            if(dataBean.getProductID().length()<10){
-                                dataBean.setProductID(ChangeTool.codeAddOne(dataBean.getProductID(),10));
+                            if (dataBean.getProductID().length() < 10) {
+                                dataBean.setProductID(ChangeTool.codeAddOne(dataBean.getProductID(), 10));
                             }
                             ShopModelDB shopModelDB = new ShopModelDB(dataBean);
-
                             //先判断此商品在不在，在则更新 不在插入
                             List list = shopDaoUtils.queryByQueryBuilder(ShopModelDBDao.Properties.ID.eq(dataBean.getID().toString()));
                             if (list.size() > 0) {
                                 ShopModelDB temp = (ShopModelDB) list.get(0);
                                 shopModelDB.setSid(temp.getSid());
-                                shopModelDB.setHeartTime(temp.getHeartTime());
                                 boolean v = shopDaoUtils.update(shopModelDB);
-//                                Log.i("数据库", "v=" + v);
                             } else {
-//                                Log.i("数据库", "插入" + shopModelDB.getHeartTime());
-                                //默认是25
-                                shopModelDB.setHeartTime("25");
                                 boolean v = shopDaoUtils.insert(shopModelDB);
-//                                Log.i("数据库", "v=" + v);
                             }
-
                         }
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -199,30 +193,21 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     public void updataShopManager() {
+        int cabinetNum = SharedPreferenceUtil.getIntData(SharePConstant.PARAM_MACHINE_CABINET_NUM, 1);
         List<ShopModelDB> shopModelDBList = shopDaoUtils.queryAll();
-        List<ShopManagerDB> shopManagerDBList = shopManagerDBUtils.queryAll();
-        //不存在商品管理数据库
-        if (shopManagerDBList.size() < 1) {
-            for (int i = 0; i <Constant.TOTAL_CHANNEL; i++) {
-                ShopManagerDB shopManagerDB;
-                if (i < 6) {
-                    shopManagerDB = new ShopManagerDB(shopModelDBList.get(0), i + 1);
-//                    if(i==1){
-//                        shopManagerDB.setChannelFault("1");
-//                    }
-                } else {
-                    if(shopModelDBList.size()>1){
-                        shopManagerDB = new ShopManagerDB(shopModelDBList.get(1), i + 1);
-                    }else {
-                        shopManagerDB = new ShopManagerDB(shopModelDBList.get(0), i + 1);
-                    }
-
-                    shopManagerDB.setCombination("2");
+        if (cabinetNumChange||cabinetNum*Constant.TOTAL_CHANNEL!=shopManagerDBUtils.queryAll().size()) {
+            Log.i("主副柜改变","删除商品管理数据库");
+            shopManagerDBUtils.deleteAll();
+            ShopManagerDB shopManagerDB;
+            for(int i=0;i<cabinetNum;i++){
+                for(int j = 0; j< Constant.TOTAL_CHANNEL; j++){
+                    shopManagerDB = new ShopManagerDB(shopModelDBList.get(0), j+1, i+1);
+//                    Log.i("roshen","SID="+shopManagerDB.getSid()+",getProductName="+shopManagerDB.getProductName());
+                    shopManagerDBUtils.insert(shopManagerDB);
                 }
-                shopManagerDBList.add(shopManagerDB);
-                shopManagerDBUtils.insert(shopManagerDB);
             }
         }
+
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -230,7 +215,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 finish();
             }
         }, 1000);
-
 
     }
     /*

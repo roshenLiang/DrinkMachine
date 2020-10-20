@@ -1,6 +1,7 @@
 package com.uroica.drinkmachine.ui.fragment.shop;
  
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -23,6 +24,7 @@ import com.uroica.drinkmachine.gen.ShopManagerDBDao;
 import com.uroica.drinkmachine.gen.ShopModelDBDao;
 import com.uroica.drinkmachine.ui.sale.SalesPageActivity;
 import com.uroica.drinkmachine.util.SharedPreferenceUtil;
+import com.uroica.drinkmachine.view.LooperLayoutManager;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
     private List<String> shopPidList;
     private List<ShopModelDB> shopModelList;
     CommonDaoUtils<ShopManagerDB> shopManagerDBUtils;
+//    private Handler mHandler = new Handler();
 
     @Override
     public int initContentView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,9 +55,11 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
     @Override
     public void initData() {
         super.initData();
-
         ryShop = binding.ryShop;
-        GridLayoutManager layoutManage = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
+//        LooperLayoutManager layoutManager = new LooperLayoutManager();
+//        layoutManager.setLooperEnable(true);
+//        ryShop.setLayoutManager(layoutManager);
+        GridLayoutManager layoutManage = new GridLayoutManager(getContext(), 5);
         ryShop.setLayoutManager(layoutManage);
         shopPidList=new ArrayList<>();
         shopModelList=new ArrayList<>();
@@ -70,15 +75,25 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
             }
         }
         //去重
+        final SalesPageActivity salesPageActivity= (SalesPageActivity) getActivity();
         adapter = new ShopAdapter(getActivity(), shopModelList);
         ryShop.setAdapter(adapter);
         adapter.setOnItemShopClickListener(new ShopAdapter.OnItemShopClickListener() {
             @Override
             public void onClick(int position, ShopModelDB dataBean) {
                 //检查库存
-                LinkedList l = shopModel2Comb(dataBean);
-                if (l==null||l.size() < 1) {
-                    ToastUtils.showLong("该商品库存不足！");
+                //判断货存是否充足
+                List<ShopManagerDB> s = DaoUtilsStore.getInstance().getShopManagerDBUtils().queryByQueryBuilder(ShopManagerDBDao.Properties.ProductID.eq(dataBean.getProductID()));
+//                int shopNum = 0;
+                boolean isCheckStock=false;
+                for (ShopManagerDB sm : s) {
+                    if (Integer.valueOf(sm.getStockNum()) > 1 && sm.getChannelFault().equals("0") && !isCheckStock) {
+                        isCheckStock=true;
+                        break;
+                    }
+                }
+                if (!isCheckStock) {
+                    ToastUtils.showLong("该商品货存不足！");
                     return;
                 }
                 SalesPageActivity salesPageActivity = (SalesPageActivity) getActivity();
@@ -86,6 +101,26 @@ public class ShopFragment extends BaseFragment<FragmentShopBinding, ShopViewMode
             }
         });
     }
+
+//    Runnable scrollRunnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            ryShop.scrollBy(1, 0);
+//            mHandler.postDelayed(scrollRunnable, 10);
+//        }
+//    };
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        mHandler.postDelayed(scrollRunnable, 10);
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        mHandler.removeCallbacks(scrollRunnable);
+//    }
 
     private LinkedList<String> shopModel2Comb(ShopModelDB dataBean) {
         List<ShopManagerDB> s = shopManagerDBUtils.queryByQueryBuilder(ShopManagerDBDao.Properties.ProductID.eq(dataBean.getProductID()));

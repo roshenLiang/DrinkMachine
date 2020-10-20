@@ -1,15 +1,17 @@
 package com.uroica.drinkmachine.bean.db;
- 
+
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class ShopManagerDB {
     @Id(autoincrement = true)
     private Long Sid;
 
+    @Property(nameInDb = "CabinetID")
+    private int CabinetID;
     @Property(nameInDb = "StockNum")
     private String StockNum;
     @Property(nameInDb = "ChannleID")
@@ -43,7 +45,8 @@ public class ShopManagerDB {
     private String ImgURL;
     @Property(nameInDb = "ID")
     private Long ID;
-    public ShopManagerDB(ShopModelDB shopModelDB,int ChannleID) {
+    public ShopManagerDB(ShopModelDB shopModelDB,int ChannleID,int CabinetID) {
+        this.CabinetID = CabinetID;
         this.DeviceID = shopModelDB.getDeviceID();
         this.ProductID = shopModelDB.getProductID();
         this.ProductName = shopModelDB.getProductName();
@@ -63,13 +66,16 @@ public class ShopManagerDB {
     }
 
 
-    @Generated(hash = 1530098328)
-    public ShopManagerDB(Long Sid, String StockNum, String ChannleID,
+
+
+    @Generated(hash = 1798870168)
+    public ShopManagerDB(Long Sid, int CabinetID, String StockNum, String ChannleID,
             String Combination, String ChannelFault, String DeviceID,
             String ProductID, String ProductName, String EnName, String Points,
             String Price, String CB, String Detail, String Store, String ListIndex,
             String ImgURL, Long ID) {
         this.Sid = Sid;
+        this.CabinetID = CabinetID;
         this.StockNum = StockNum;
         this.ChannleID = ChannleID;
         this.Combination = Combination;
@@ -89,9 +95,13 @@ public class ShopManagerDB {
     }
 
 
+
+
     @Generated(hash = 1283715975)
     public ShopManagerDB() {
     }
+
+
 
 
     public void setShopModel(ShopModelDB shopModelDB){
@@ -277,6 +287,16 @@ public class ShopManagerDB {
 
     public void setChannelFault(String ChannelFault) {
         this.ChannelFault = ChannelFault;
+    }
+
+
+    public int getCabinetID() {
+        return this.CabinetID;
+    }
+
+
+    public void setCabinetID(int CabinetID) {
+        this.CabinetID = CabinetID;
     }
 
 

@@ -13,7 +13,6 @@ import com.uroica.drinkmachine.BR;
 import com.uroica.drinkmachine.R;
 import com.uroica.drinkmachine.adapter.RecordAdapter;
 import com.uroica.drinkmachine.bean.db.SaleRecordDB;
-import com.uroica.drinkmachine.databinding.ActivityParameterBinding;
 import com.uroica.drinkmachine.databinding.ActivitySalerecordBinding;
 import com.uroica.drinkmachine.db.DaoUtilsStore;
 import com.uroica.drinkmachine.gen.SaleRecordDBDao;

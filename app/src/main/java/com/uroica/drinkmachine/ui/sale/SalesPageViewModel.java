@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.uroica.drinkmachine.bean.rxbus.Bus_ACKBean;
+import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperHeatBean;
 
 import java.util.Date;
@@ -60,10 +61,10 @@ public class SalesPageViewModel extends BaseViewModel {
     @Override
     public void registerRxBus() {
         super.registerRxBus();
-        mSubscription = RxBus.getDefault().toObservable(Bus_LooperHeatBean.class)
-                .subscribe(new Consumer<Bus_LooperHeatBean>() {
+        mSubscription = RxBus.getDefault().toObservable(Bus_LooperDrinkBean.class)
+                .subscribe(new Consumer<Bus_LooperDrinkBean>() {
                     @Override
-                    public void accept(Bus_LooperHeatBean looperBean) throws Exception {
+                    public void accept(Bus_LooperDrinkBean looperBean) throws Exception {
                         uc.loop.postValue(looperBean);
                     }
                 });

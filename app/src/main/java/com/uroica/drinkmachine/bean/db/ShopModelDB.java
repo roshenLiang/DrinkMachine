@@ -1,11 +1,11 @@
 package com.uroica.drinkmachine.bean.db;
- 
+
 import com.uroica.drinkmachine.bean.ShopModel;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.io.Serializable;
 
@@ -74,6 +74,7 @@ public class ShopModelDB  implements Serializable {
         this.ID = dataBean.getID();
     }
 
+
     @Generated(hash = 1975347264)
     public ShopModelDB(Long Sid, String HeartTime, String DeviceID,
             String ProductID, String ProductName, String EnName, String Points,
@@ -95,9 +96,11 @@ public class ShopModelDB  implements Serializable {
         this.ID = ID;
     }
 
+
     @Generated(hash = 107453549)
     public ShopModelDB() {
     }
+
 
     public Long getSid() {
         return this.Sid;

@@ -3,9 +3,10 @@ package com.uroica.drinkmachine.constant
 class Constant {
 
     companion object {
-        //热卖机
-        const val TOTAL_CHANNEL = 12;
-        const val TOTAL_NUM = 7;
+        //总货道
+        const val TOTAL_CHANNEL = 70; //
+        //一个货道多少个数量
+        const val TOTAL_NUM = 10;
         //热卖机
         const val MACHINE_TYPE_HEAT = 0;
         //桶装水
@@ -17,7 +18,7 @@ class Constant {
         const val MACHINE_TYPE_LATTICE = 3;
 
 
-                const  val BASE_URL = "https://uroicavending.cn:4430"//正式
+        const  val BASE_URL = "https://uroicavending.cn:4430"//正式
 //        const  val BASE_URL = "https://payforpark.cn:9983";//旧的
         //MQTT
         const val MQTT_IP = "47.112.160.93";//正式

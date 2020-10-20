@@ -30,7 +30,7 @@ android {
 }
 greendao {
     schemaVersion 1    //<--数据库的版本，用于升级时候进行更改
-    daoPackage 'com.uroica.heartmachine.gen'     //存放自动生成代码的包
+    daoPackage 'com.uroica.drinkmachine.gen'     //存放自动生成代码的包
     targetGenDir 'src/main/java'                  //...
 }
 

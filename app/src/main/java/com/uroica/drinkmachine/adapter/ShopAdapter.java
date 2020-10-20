@@ -20,8 +20,8 @@ import com.uroica.drinkmachine.bean.db.ShopModelDB;
 import java.util.List;
 
 public class ShopAdapter extends RecyclerView.Adapter<MyShopHolder> {
-    private final int TWO = 2;
-    private final int ONE = 1;
+//    private final int TWO = 2;
+//    private final int ONE = 1;
     private Context context;
     private List<ShopModelDB> mList;
 
@@ -34,38 +34,38 @@ public class ShopAdapter extends RecyclerView.Adapter<MyShopHolder> {
         mList.add(dataBean);
     }
 
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-        if (manager instanceof GridLayoutManager) {
-            final GridLayoutManager gridManager = ((GridLayoutManager) manager);
-            gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    int type = getItemViewType(position);
-                    switch (type) {
-                        case ONE:
-                            return 1;
-                        default:
-                            return 2;
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (mList.size() % 2 == 1)
-            if (mList.size() - 1 == position)
-                return TWO;
-            else
-                return ONE;
-        else
-            return ONE;
-
-    }
+//    @Override
+//    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+//        super.onAttachedToRecyclerView(recyclerView);
+//        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+//        if (manager instanceof GridLayoutManager) {
+//            final GridLayoutManager gridManager = ((GridLayoutManager) manager);
+//            gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//                @Override
+//                public int getSpanSize(int position) {
+//                    int type = getItemViewType(position);
+//                    switch (type) {
+//                        case ONE:
+//                            return 1;
+//                        default:
+//                            return 2;
+//                    }
+//                }
+//            });
+//        }
+//    }
+//
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (mList.size() % 2 == 1)
+//            if (mList.size() - 1 == position)
+//                return TWO;
+//            else
+//                return ONE;
+//        else
+//            return ONE;
+//
+//    }
 
     @Override
     public MyShopHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -82,8 +82,8 @@ public class ShopAdapter extends RecyclerView.Adapter<MyShopHolder> {
         RequestOptions options = RequestOptions.bitmapTransform(roundedCorners);
 //        DecimalFormat df = new DecimalFormat("#0.00");
         holder.tv_price.setText("￥ "+dataBean.getPrice());
-        holder.tv_name.setText(dataBean.getProductName());
-        holder.tv_describe.setText(dataBean.getDetail());
+//        holder.tv_name.setText(dataBean.getProductName());
+//        holder.tv_describe.setText(dataBean.getDetail());
         Glide.with(context).load(dataBean.getImgURL()).apply(options).into(holder.iv_shop);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,15 +116,15 @@ public class ShopAdapter extends RecyclerView.Adapter<MyShopHolder> {
 
 class MyShopHolder extends RecyclerView.ViewHolder {
     TextView tv_price;
-    TextView tv_name;
-    TextView tv_describe;
+//    TextView tv_name;
+//    TextView tv_describe;
     ImageView iv_shop;
 
     public MyShopHolder(View itemView) {
         super(itemView);
         tv_price = itemView.findViewById(R.id.tv_price);
-        tv_name = itemView.findViewById(R.id.tv_name);
-        tv_describe = itemView.findViewById(R.id.tv_describe);
+//        tv_name = itemView.findViewById(R.id.tv_name);
+//        tv_describe = itemView.findViewById(R.id.tv_describe);
         iv_shop = itemView.findViewById(R.id.iv_shop);
     }
 

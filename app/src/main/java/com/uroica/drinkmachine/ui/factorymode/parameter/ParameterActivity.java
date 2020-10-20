@@ -1,11 +1,15 @@
 package com.uroica.drinkmachine.ui.factorymode.parameter;
  
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -14,6 +18,8 @@ import com.uroica.drinkmachine.R;
 import com.uroica.drinkmachine.constant.SharePConstant;
 import com.uroica.drinkmachine.databinding.ActivityFactorymodeBinding;
 import com.uroica.drinkmachine.databinding.ActivityParameterBinding;
+import com.uroica.drinkmachine.greement.AgreementManager;
+import com.uroica.drinkmachine.ui.MainActivity;
 import com.uroica.drinkmachine.util.SharedPreferenceUtil;
 import com.uroica.drinkmachine.util.serialport.SerialPortManager;
 
@@ -22,11 +28,9 @@ import me.goldze.mvvmhabit.base.BaseActivity;
 public class ParameterActivity extends BaseActivity<ActivityParameterBinding, ParameterViewModel> implements AdapterView.OnItemSelectedListener {
     private String[] mDevices;
     private String[] mBaudrates;
-//    private String[] mMachineTypes;
     private int mDeviceIndex;
     private int mBaudrateIndex;
-//    private int cabinetNum;
-//    private int mMachineIndex;
+    private int cabinetNum;
     SerialPortManager mSerialPortManager;
     Spinner mSpinnerDevices,mSpinnerBaudrate;//mSpinnerMachineType
 
@@ -47,11 +51,10 @@ public class ParameterActivity extends BaseActivity<ActivityParameterBinding, Pa
         BarUtils.setStatusBarVisibility(this,false);
         mSpinnerDevices=binding.spinnerDevices;
         mSpinnerBaudrate=binding.spinnerBaudrate;
-//        mSpinnerMachineType=binding.spinnerMachineType;
         initDevice();
         initSpinners();
-//        AgreementManager.Companion.getInstance().putMachineBoardNum(Integer.valueOf(cabinetNum));
         initListen();
+        initDiaLog();
     }
 
 
@@ -66,13 +69,11 @@ public class ParameterActivity extends BaseActivity<ActivityParameterBinding, Pa
         }
         // 波特率
         mBaudrates = getResources().getStringArray(R.array.baudrates);
-        //设备类型
-//        mMachineTypes=getResources().getStringArray(R.array.machine_type);
         mDeviceIndex=SharedPreferenceUtil.getIntData(SharePConstant.PARAM_SERIALPORT_DEVICEINDEX,0);
         mBaudrateIndex=SharedPreferenceUtil.getIntData(SharePConstant.PARAM_SERIALPORT_BAUDRATEINDEX,0);
-//        cabinetNum=SharedPreferenceUtil.getIntData(SharePConstant.PARAM_MACHINE_CABINET_NUM,1);
-//        mMachineIndex=SharedPreferenceUtil.getIntData(SharePConstant.PARAM_MACHINE_TYPE_INDEX, Constant.MACHINE_TYPE_HEAT);
-//        binding.etCabinetNum.setText(String.valueOf(cabinetNum));
+        cabinetNum=SharedPreferenceUtil.getIntData(SharePConstant.PARAM_MACHINE_CABINET_NUM,1);
+        binding.etCabinetNum.setText(String.valueOf(cabinetNum));
+        AgreementManager.Companion.getInstance().putMachineBoardNum(Integer.valueOf(cabinetNum));
     }
 
     private void initSpinners() {
@@ -88,15 +89,9 @@ public class ParameterActivity extends BaseActivity<ActivityParameterBinding, Pa
         mSpinnerBaudrate.setAdapter(baudrateAdapter);
         mSpinnerBaudrate.setOnItemSelectedListener(this);
 
-//        ArrayAdapter<String> machineTypeAdapter =
-//                new ArrayAdapter<String>(this, R.layout.spinner_default_item, mMachineTypes);
-//        machineTypeAdapter.setDropDownViewResource(R.layout.spinner_item);
-//        mSpinnerMachineType.setAdapter(machineTypeAdapter);
-//        mSpinnerMachineType.setOnItemSelectedListener(this);
 
         mSpinnerDevices.setSelection(mDeviceIndex);
         mSpinnerBaudrate.setSelection(mBaudrateIndex);
-//        mSpinnerMachineType.setSelection(mMachineIndex);
 
     }
     private void initListen() {
@@ -110,30 +105,23 @@ public class ParameterActivity extends BaseActivity<ActivityParameterBinding, Pa
                 ToastUtils.showShort("保存串口参数成功！");
             }
         });
-//        binding.btnSaveCabinet.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String text = binding.etCabinetNum.getText().toString().trim();
-//                if (TextUtils.isEmpty(text) ) {
-//                    ToastUtils.showLong("无效数据");
-//                    return;
-//                }
-//                if(mMachineIndex==Constant.MACHINE_TYPE_HEAT&& Integer.valueOf(text)>1){
-//                    ToastUtils.showLong("热卖机类型的主副柜数量只能填1！");
-//                    return;
-//                }
-//                SharedPreferenceUtil.saveData(SharePConstant.PARAM_MACHINE_CABINET_NUM,Integer.valueOf(text));
-//                AgreementManager.Companion.getInstance().putMachineBoardNum(Integer.valueOf(text));
-//                ToastUtils.showShort("保存主副柜数量成功！");
-//            }
-//        });
-//        binding.btnSaveMachineType.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                SharedPreferenceUtil.saveData(SharePConstant.PARAM_MACHINE_TYPE_INDEX,mMachineIndex);
-//                ToastUtils.showShort("保存设备类型成功！");
-//            }
-//        });
+        binding.btnSaveCabinet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text = binding.etCabinetNum.getText().toString().trim();
+                if (TextUtils.isEmpty(text) ) {
+                    ToastUtils.showLong("请输入主副柜数量");
+                    return;
+                }
+                //提示要重啓系统
+                if(cabinetNum==Integer.valueOf(text)){
+                    ToastUtils.showLong("主副柜数量没变化，已保存");
+                }else{
+                    showDialog();
+                }
+
+            }
+        });
     }
 
     @Override
@@ -146,17 +134,44 @@ public class ParameterActivity extends BaseActivity<ActivityParameterBinding, Pa
             case R.id.spinner_baudrate:
                 mBaudrateIndex = position;
                 break;
-//            case R.id.spinner_machine_type:
-//                mMachineIndex = position;
-//                if(position==0){
-//                    binding.llCabinet.setVisibility(View.GONE);
-//                }else{
-//                    binding.llCabinet.setVisibility(View.VISIBLE);
-//                }
-//                break;
         }
     }
 
+    AlertDialog dialog;
+    /**
+     * 两个按钮的 dialog
+     */
+    private void initDiaLog() {
+        dialog = new AlertDialog.Builder(this).setIcon(R.mipmap.ic_launcher)
+                .setMessage("更改主副柜数量需要重启系统").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferenceUtil.saveData(SharePConstant.PARAM_MACHINE_CABINET_NUM,Integer.valueOf(binding.etCabinetNum.getText().toString().trim()));
+                        AgreementManager.Companion.getInstance().putMachineBoardNum(Integer.valueOf(binding.etCabinetNum.getText().toString().trim()));
+                        ToastUtils.showShort("保存主副柜数量成功！");
+                        Bundle b=new Bundle();
+                        b.putBoolean("cabinetNumChange",true);
+                        startActivity(MainActivity.class,b);
+                        finish();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).create();
+    }
+
+    public void showDialog(){
+        if(dialog!=null){
+            dialog.show();
+        }
+    }
+    public void dismissDialog(){
+        if(dialog!=null){
+            dialog.dismiss();
+        }
+    }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
