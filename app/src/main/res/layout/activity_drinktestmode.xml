@@ -15,6 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ry_cabinet"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            tools:ignore="MissingConstraints" />
         <LinearLayout
             android:id="@+id/ll_cabinet_status"
             android:layout_width="match_parent"
@@ -23,20 +28,19 @@
             android:layout_marginTop="50dp"
             android:layout_marginRight="50dp"
             android:background="@drawable/rectangle_bg"
+            app:layout_constraintTop_toBottomOf="@id/ry_cabinet"
             android:orientation="vertical"
             android:padding="10dp"
-            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints">
-
             <TextView
                 android:id="@+id/tv_cur_cabinet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="柜子状态"
+                android:text="当前柜子"
                 android:textColor="@color/white"
-                android:textSize="40sp" />
-
+                android:textSize="40sp"
+                />
             <TextView
                 android:id="@+id/tv_cur_temp"
                 android:layout_width="match_parent"
@@ -60,136 +64,136 @@
                 android:textSize="25sp" />
 
             <TextView
-                android:id="@+id/tv_shipmentChannelD"
+                android:id="@+id/tv_curChannel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"
                 android:gravity="left"
-                android:text="@={viewModel.shipmentChannelD}"
+                android:text="@={viewModel.curChannel}"
                 android:textColor="@color/white"
                 android:textSize="25sp" />
 
+            <TextView
+                android:id="@+id/tv_ChannelD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:gravity="left"
+                android:text="@={viewModel.channleD}"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+                        <TextView
+                            android:id="@+id/tv_shipmentResult"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            android:gravity="left"
+                            android:text="@={viewModel.shipmentResult}"
+                            android:textColor="@color/white"
+                            android:textSize="25sp" />
+
+                        <TextView
+                            android:id="@+id/tv_vibrationState"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            android:gravity="left"
+                            android:text="@={viewModel.vibrationState}"
+                            android:textColor="@color/white"
+                            android:textSize="25sp" />
+
+
 <!--            <TextView-->
-<!--                android:id="@+id/tv_channelResult"-->
+<!--                android:id="@+id/tv_up_door_open"-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginLeft="20dp"-->
 <!--                android:layout_marginTop="5dp"-->
 <!--                android:gravity="left"-->
-<!--                android:text="@={viewModel.channelResult}"-->
+<!--                android:text="@={viewModel.upDoorOpen}"-->
 <!--                android:textColor="@color/white"-->
 <!--                android:textSize="25sp" />-->
 
-            <TextView
-                android:id="@+id/tv_curMode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.curMode}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_up_door_close"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.upDoorClose}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
 
-            <TextView
-                android:id="@+id/tv_heatChannelD"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.heatChannleD}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_down_door_open"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.downDoorOpen}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
 
-            <TextView
-                android:id="@+id/tv_up_door_open"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.upDoorOpen}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_down_door_close"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.downDoorClose}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
 
-            <TextView
-                android:id="@+id/tv_up_door_close"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.upDoorClose}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_copmressorS"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.copmressorS}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
 
-            <TextView
-                android:id="@+id/tv_down_door_open"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.downDoorOpen}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_copmressorA"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.copmressorA}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
 
-            <TextView
-                android:id="@+id/tv_down_door_close"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.downDoorClose}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_microwaveS"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.microwaveS}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
 
-            <TextView
-                android:id="@+id/tv_copmressorS"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.copmressorS}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/tv_copmressorA"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.copmressorA}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/tv_microwaveS"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.microwaveS}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/tv_microwaveA"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:text="@={viewModel.microwaveA}"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_microwaveA"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:gravity="left"-->
+<!--                android:text="@={viewModel.microwaveA}"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="25sp" />-->
 
             <TextView
                 android:id="@+id/tv_serialport"
@@ -215,60 +219,60 @@
             app:layout_constraintTop_toBottomOf="@id/ll_cabinet_status"
             tools:ignore="MissingConstraints" />
 
-        <TextView
-            android:id="@+id/tv_setShipmentMode"
-            style="@style/TestModeTextForHeat"
-            android:layout_marginLeft="80dp"
-            android:text="※ 加热装置："
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_shipment"
-            tools:ignore="MissingConstraints" />
-        <LinearLayout
-            android:layout_marginTop="30dp"
-            android:id="@+id/ll_mode"
-            app:layout_constraintTop_toBottomOf="@id/tv_setShipmentMode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="120dp"
-            android:layout_marginRight="120dp"
-            tools:ignore="MissingConstraints">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            app:onClickCommand="@{viewModel.testHeartOnClickCommand}"
-            android:text="测试加热装置"
-            android:background="@drawable/rectangle_bg"
-            tools:ignore="MissingConstraints" />
-        <TextView
-            android:text="@={viewModel.upDoorStatus}"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            app:onClickCommand="@{viewModel.upDoorOnClickCommand}"
-            android:background="@drawable/rectangle_bg"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            tools:ignore="MissingConstraints" />
-        <TextView
-            android:text="@={viewModel.downDoorStatus}"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            app:onClickCommand="@{viewModel.downDoorOnClickCommand}"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            android:background="@drawable/rectangle_bg"
-            tools:ignore="MissingConstraints" />
-        </LinearLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/tv_setShipmentMode"-->
+<!--            style="@style/TestModeTextForHeat"-->
+<!--            android:layout_marginLeft="80dp"-->
+<!--            android:text="※ 加热装置："-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_shipment"-->
+<!--            tools:ignore="MissingConstraints" />-->
+<!--        <LinearLayout-->
+<!--            android:layout_marginTop="30dp"-->
+<!--            android:id="@+id/ll_mode"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_setShipmentMode"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_marginLeft="120dp"-->
+<!--            android:layout_marginRight="120dp"-->
+<!--            tools:ignore="MissingConstraints">-->
+<!--        <TextView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="30sp"-->
+<!--            app:onClickCommand="@{viewModel.testHeartOnClickCommand}"-->
+<!--            android:text="测试加热装置"-->
+<!--            android:background="@drawable/rectangle_bg"-->
+<!--            tools:ignore="MissingConstraints" />-->
+<!--        <TextView-->
+<!--            android:text="@={viewModel.upDoorStatus}"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:layout_marginRight="30dp"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:onClickCommand="@{viewModel.upDoorOnClickCommand}"-->
+<!--            android:background="@drawable/rectangle_bg"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="30sp"-->
+<!--            tools:ignore="MissingConstraints" />-->
+<!--        <TextView-->
+<!--            android:text="@={viewModel.downDoorStatus}"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:onClickCommand="@{viewModel.downDoorOnClickCommand}"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="30sp"-->
+<!--            android:background="@drawable/rectangle_bg"-->
+<!--            tools:ignore="MissingConstraints" />-->
+<!--        </LinearLayout>-->
 
 <!--        <TextView-->
 <!--            android:id="@+id/tv_heatTime1"-->
@@ -309,7 +313,7 @@
             android:layout_marginLeft="80dp"
             android:text="※ 单货道出货   货道："
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_mode"
+            app:layout_constraintTop_toBottomOf="@id/tv_shipment"
             tools:ignore="MissingConstraints" />
 
         <EditText
@@ -495,21 +499,21 @@
             app:onClickCommand="@{viewModel.setTempOnClickCommand}"
             tools:ignore="MissingConstraints" />
 
-        <TextView
-            android:id="@+id/tv_clear"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="100dp"
-            android:background="@drawable/rectangle_bg"
-            android:gravity="center"
-            android:text="※ 清除微波炉故障"
-            android:textColor="@color/white"
-            android:textSize="25sp"
-            app:layout_constraintTop_toBottomOf="@id/tv_temp"
-            app:onClickCommand="@{viewModel.clearOnClickCommand}"
-            tools:ignore="MissingConstraints" />
+<!--        <TextView-->
+<!--            android:id="@+id/tv_clear"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginLeft="100dp"-->
+<!--            android:layout_marginTop="50dp"-->
+<!--            android:layout_marginRight="100dp"-->
+<!--            android:background="@drawable/rectangle_bg"-->
+<!--            android:gravity="center"-->
+<!--            android:text="※ 清除微波炉故障"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="25sp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_temp"-->
+<!--            app:onClickCommand="@{viewModel.clearOnClickCommand}"-->
+<!--            tools:ignore="MissingConstraints" />-->
 
 
 
@@ -520,7 +524,7 @@
             android:layout_marginLeft="80dp"
             android:layout_marginTop="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_clear"
+            app:layout_constraintTop_toBottomOf="@id/tv_temp"
             tools:ignore="MissingConstraints" />
 
         <EditText

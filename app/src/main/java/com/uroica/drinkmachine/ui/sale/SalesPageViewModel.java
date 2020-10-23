@@ -10,7 +10,6 @@ import androidx.databinding.ObservableField;
 
 import com.uroica.drinkmachine.bean.rxbus.Bus_ACKBean;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
-import com.uroica.drinkmachine.bean.rxbus.Bus_LooperHeatBean;
 
 import java.util.Date;
 

@@ -1,9 +1,9 @@
 package com.uroica.drinkmachine.bean.db;
- 
+
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -65,6 +65,13 @@ public class SaleRecordDB {
     @Generated(hash = 628109274)
     public SaleRecordDB() {
     }
+
+    public  String getLong2Month(long time){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM", Locale.CHINA);
+        Date date = new Date(time);
+        String dateStr = dateFormat.format(date);
+        return dateStr;
+    }
     public Long getSid() {
         return this.Sid;
     }
@@ -112,12 +119,5 @@ public class SaleRecordDB {
     }
     public void setMonth(int month) {
         this.month = month;
-    }
-
-    public  String getLong2Month(long time){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM", Locale.CHINA);
-        Date date = new Date(time);
-        String dateStr = dateFormat.format(date);
-        return dateStr;
     }
 }

@@ -103,18 +103,6 @@ class AgreementManager private constructor() {
             }
         }, 200, 200)
     }
-//    fun startLoopCheckCabinet( mainBoard: Int) {
-//        stopLoopCheckCabinet();
-//        Log.i("串口内容", "开启单轮询")
-//        curMainBoardIndex = mainBoard;
-//        //开启200ms轮询
-//        timer = Timer()
-//        timer.scheduleAtFixedRate(object : TimerTask() {
-//            override fun run() {
-//                checkCabinet(curMainBoardIndex)
-//            }
-//        }, 200, 200)
-//    }
 
     fun stopLoopCheckCabinet() {
         timer?.cancel()
@@ -298,7 +286,7 @@ class AgreementManager private constructor() {
                                     LogUtils.file("接受到串口数据", "轮询")
                                     Log.i("接受到串口数据", "轮询")
                                  //0003010100030C0000D8F2F1
-                                   var bs= Bus_LooperHeatBean(data)
+                                   var bs= Bus_LooperDrinkBean(data)
                                     LogUtils.file("当前温度", "温度="+bs.real_Temp)
                                     RxBus.getDefault().post(bs)
                             }

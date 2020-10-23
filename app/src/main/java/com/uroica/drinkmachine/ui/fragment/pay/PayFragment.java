@@ -23,7 +23,6 @@ import com.uroica.drinkmachine.bean.CodeModel;
 import com.uroica.drinkmachine.bean.db.ShopManagerDB;
 import com.uroica.drinkmachine.bean.db.ShopModelDB;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
-import com.uroica.drinkmachine.bean.rxbus.Bus_LooperHeatBean;
 import com.uroica.drinkmachine.constant.SharePConstant;
 import com.uroica.drinkmachine.databinding.FragmentPayBinding;
 import com.uroica.drinkmachine.db.CommonDaoUtils;
@@ -37,10 +36,6 @@ import com.uroica.drinkmachine.util.SharedPreferenceUtil;
 import com.uroica.drinkmachine.util.ZxingUtils;
 
 import org.jetbrains.annotations.NotNull;
-
-
-import java.lang.reflect.Type;
-import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -81,12 +76,12 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         activity = (SalesPageActivity) getActivity();
         deviceID = DeviceUtils.getAndroidID();
         deviceID = ChangeTool.codeAddOne(deviceID, 20).toUpperCase();
+        deviceID="00006D8893B746CB2B7F";
         dataBean = (ShopModelDB) getArguments().getSerializable("ShopModelDB");
         fromMachine = getArguments().getBoolean("fromMachine");
         shopDaoUtils = DaoUtilsStore.getInstance().getShopDaoUtils();
         shopManagerDBUtils = DaoUtilsStore.getInstance().getShopManagerDBUtils();
         SharedPreferenceUtil.initSharedPreferenc(activity);
-
         mHandler = new Handler();
         initShowPro();
         initListen();
@@ -123,11 +118,17 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         AgreementManager.Companion.getInstance().setReceivedListener(new AgreementManager.onReceivedListener() {
             @Override
             public void OnListener(@NotNull String data) {
-                final Bus_LooperDrinkBean looperBean = new Bus_LooperDrinkBean(data);
-                if (looperBean.getControl_state() == 1 && !isShipmenting) {
-                    shipmenting();
-                } else if (looperBean.getControl_state() == 2 && isShipmenting && !isShipmentResult) {
-                    shipmentResult(looperBean);
+                if (data.substring(2, 4).equals("03")) {
+                    final Bus_LooperDrinkBean looperBean = new Bus_LooperDrinkBean(data);
+                    if (looperBean.getControl_state() != 0) {
+                        //更新数据库的故障
+                        updateChannelD(looperBean);
+                    }
+                    if (looperBean.getControl_state() == 1 && !isShipmenting) {
+                        shipmenting();
+                    } else if (looperBean.getControl_state() == 2 && isShipmenting && !isShipmentResult) {
+                        shipmentResult(looperBean);
+                    }
                 }
             }
         });
@@ -137,6 +138,23 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
                 activity.commitAllowingStateLoss(0);
             }
         });
+    }
+
+
+    private void updateChannelD(Bus_LooperDrinkBean looperBean) {
+//        //更新
+        List list = DaoUtilsStore.getInstance().getShopManagerDBUtils().queryByQueryBuilder(ShopManagerDBDao.Properties.ChannleID.eq(looperBean.getCurrent_Channel()));
+        if (list.size() > 0) {
+            ShopManagerDB s = (ShopManagerDB) list.get(0);
+             if (looperBean.getResult_channel() == 1 || looperBean.getResult_channel() == 2) {
+                if (s.getChannelFault().equals("0")) {
+                    Log.i("故障", "检测到不正常 ,查询到数据库正常");
+                    //检测到不正常 ,查询到数据库正常
+                    s.setChannelFault("1");
+                    DaoUtilsStore.getInstance().getShopManagerDBUtils().update(s);
+                }
+            }
+        }
     }
 
 
@@ -180,16 +198,6 @@ public class PayFragment extends BaseFragment<FragmentPayBinding, PayViewModel> 
         });
     }
 
-//    void shipmentFaildUI() {
-//        isShipmentResult = true;
-//        BACK_NUM = 10000;
-//        Glide.with(getActivity()).load(R.mipmap.icon_shipmentfalse).transition(GenericTransitionOptions.with(R.anim.zoomin)).into(binding.ivShipmentStatus);
-//        if (isChannelFault)
-//            binding.tvShipmentStatus.setText("出货失败，机器故障，一小时之内自动退款");
-//        else
-//            binding.tvShipmentStatus.setText("出货失败，一小时之内自动退款");
-//        startBackCountDown();
-//    }
 
     private void shipmenting() {
         isShipmenting = true;

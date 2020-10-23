@@ -121,8 +121,8 @@ public class ShopManagerAdapter extends RecyclerView.Adapter<MyShopManagerHolder
                 shopManagerDBUtils.update(s);
                 Glide.with(context).load(s.getImgURL()).into(holder.iv_shoppic);
                 holder.tv_price.setText(s.getPrice());
-                ShopManagerDB sss = shopManagerDBUtils.queryByQueryBuilder(ShopManagerDBDao.Properties.Sid.eq(s.getSid())).get(0);
-                Log.i("roshen", "查询=" + sss.getSid() + "，name=" + sss.getProductName());
+//                ShopManagerDB sss = shopManagerDBUtils.queryByQueryBuilder(ShopManagerDBDao.Properties.Sid.eq(s.getSid())).get(0);
+//                Log.i("roshen", "查询=" + sss.getSid() + "，name=" + sss.getProductName());
 
             }
 

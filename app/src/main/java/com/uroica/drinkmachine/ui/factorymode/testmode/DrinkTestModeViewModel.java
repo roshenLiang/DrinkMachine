@@ -12,7 +12,6 @@ import com.google.gson.reflect.TypeToken;
 //import com.uroica.heartmachine.bean.rxbus.Bus_ACKBean;
 import com.uroica.drinkmachine.bean.db.ShopManagerDB;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
-import com.uroica.drinkmachine.bean.rxbus.Bus_LooperHeatBean;
 import com.uroica.drinkmachine.constant.Constant;
 import com.uroica.drinkmachine.db.DaoUtilsStore;
 import com.uroica.drinkmachine.gen.ShopManagerDBDao;
@@ -106,6 +105,10 @@ public class DrinkTestModeViewModel extends BaseViewModel {
     public BindingCommand go2OnlyShipmentOnClickCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
+            if(looperDrinkBean==null){
+                ToastUtils.showShort("通讯存在问题");
+                return;
+            }
             if (looperDrinkBean.getControl_state() == 1 || looperDrinkBean.getControl_state() == 2) {
                 ToastUtils.showShort("控制板状态正忙");
                 return;
@@ -135,6 +138,10 @@ public class DrinkTestModeViewModel extends BaseViewModel {
     public BindingCommand go2FloorShipmentOnClickCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
+            if(looperDrinkBean==null){
+                ToastUtils.showShort("通讯存在问题");
+                return;
+            }
             if (looperDrinkBean.getControl_state() == 1 || looperDrinkBean.getControl_state() == 2) {
                 ToastUtils.showShort("控制板状态正忙");
                 return;
@@ -167,6 +174,10 @@ public class DrinkTestModeViewModel extends BaseViewModel {
     public BindingCommand go2AllShipmentOnClickCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
+            if(looperDrinkBean==null){
+                ToastUtils.showShort("通讯存在问题");
+                return;
+            }
             if (looperDrinkBean.getControl_state() == 1 || looperDrinkBean.getControl_state() == 2) {
                 ToastUtils.showShort("控制板状态正忙");
                 return;
@@ -291,11 +302,8 @@ public class DrinkTestModeViewModel extends BaseViewModel {
                         shipmentResult.set(looperDrinkBean.getResult_shipment2String());
                         vibrationState.set(looperDrinkBean.getVibration_state2String());
                         if (looperDrinkBean.getControl_state() != 0) {
-//                            heatChannleD.set(looperHeatBean.getChannelDStatus2String());
                             //更新数据库的故障
-//                            if (looperHeatBean.getCur_mode() == 2) {
-//                                updateChannelD(looperHeatBean);
-//                            }
+                            updateChannelD(looperDrinkBean);
                         }
                         if (looperDrinkBean.getControl_state() == 2) {
                             AgreementManager.Companion.getInstance().sendACK(1);
@@ -307,11 +315,9 @@ public class DrinkTestModeViewModel extends BaseViewModel {
                     //收到ACK后再操作
                     shipmentIndex++;
                     if (shipmentLists != null && shipmentIndex < shipmentLists.size()) {
-                        Log.i("1111","1111");
                         AgreementManager.Companion.getInstance().runDrinkShipment(curMainBoard, halfCirInt, shipmentLists.get(shipmentIndex));
                     } else {
-                        Log.i("22222","22222");
-                        AgreementManager.Companion.getInstance().startLoopCheckCabinet();
+                        AgreementManager.Companion.getInstance().sstartLoopCheckCabinet();
                     }
                 }
             }
@@ -325,70 +331,25 @@ public class DrinkTestModeViewModel extends BaseViewModel {
     }
 
 
-    private void updateChannelD(Bus_LooperHeatBean looperBean) {
-        //更新
+    private void updateChannelD(Bus_LooperDrinkBean looperBean) {
+//        //更新
         List list = DaoUtilsStore.getInstance().getShopManagerDBUtils().queryByQueryBuilder(ShopManagerDBDao.Properties.ChannleID.eq(looperBean.getCurrent_Channel()));
         if (list.size() > 0) {
             ShopManagerDB s = (ShopManagerDB) list.get(0);
-            if (looperBean.getChannelDStatus() == 0 && s.getChannelFault().equals("1")) {
+            if (looperBean.getResult_channel() == 0 && s.getChannelFault().equals("1")) {
                 Log.i("故障", "检测到正常 ,查询到数据库不正常");
                 //检测到正常 ,查询到数据库不正常
                 s.setChannelFault("0");
                 DaoUtilsStore.getInstance().getShopManagerDBUtils().update(s);
-                //添加
-                String data;
-                Gson gson = new Gson();
-                if (s.getCombination().equals("1")) {
-                    data = SharedPreferenceUtil.getStrData("comb1");
-                } else {
-                    data = SharedPreferenceUtil.getStrData("comb2");
-                }
-                Type listType = new TypeToken<LinkedList<String>>() {
-                }.getType();
-                LinkedList<String> ll = gson.fromJson(data, listType);
-                for (int i = 0; i < Integer.valueOf(s.getStockNum()); i++) {
-                    ll.add(s.getChannleID());
-                }
-                //baoc
-                Gson gson2 = new Gson();
-                String data2 = gson2.toJson(ll);
-                if (s.getCombination().equals("1")) {
-                    SharedPreferenceUtil.saveData("comb1", data2);
-                } else {
-                    SharedPreferenceUtil.saveData("comb2", data2);
-                }
-            } else if (looperBean.getChannelDStatus() == 1 || looperBean.getChannelDStatus() == 2) {
+            } else if (looperBean.getResult_channel() == 1 || looperBean.getResult_channel() == 2) {
                 if (s.getChannelFault().equals("0")) {
                     Log.i("故障", "检测到不正常 ,查询到数据库正常");
                     //检测到不正常 ,查询到数据库正常
                     s.setChannelFault("1");
                     DaoUtilsStore.getInstance().getShopManagerDBUtils().update(s);
-                    //移除
-                    String data;
-                    Gson gson = new Gson();
-                    if (s.getCombination().equals("1")) {
-                        data = SharedPreferenceUtil.getStrData("comb1");
-                    } else {
-                        data = SharedPreferenceUtil.getStrData("comb2");
-                    }
-                    Type listType = new TypeToken<LinkedList<String>>() {
-                    }.getType();
-                    LinkedList<String> ll = gson.fromJson(data, listType);
-                    for (int i = 0; i < Integer.valueOf(s.getStockNum()); i++) {
-                        ll.remove(s.getChannleID());
-                    }
-                    //baoc
-                    Gson gson2 = new Gson();
-                    String data2 = gson2.toJson(ll);
-                    if (s.getCombination().equals("1")) {
-                        SharedPreferenceUtil.saveData("comb1", data2);
-                    } else {
-                        SharedPreferenceUtil.saveData("comb2", data2);
-                    }
                 }
             }
         }
-
     }
 
 

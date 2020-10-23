@@ -34,7 +34,6 @@ import com.uroica.drinkmachine.bean.db.ShopManagerDB;
 import com.uroica.drinkmachine.bean.db.ShopModelDB;
 import com.uroica.drinkmachine.bean.rxbus.Bus_ACKBean;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
-import com.uroica.drinkmachine.bean.rxbus.Bus_LooperHeatBean;
 import com.uroica.drinkmachine.constant.SharePConstant;
 import com.uroica.drinkmachine.databinding.ActivitySalespageBinding;
 import com.uroica.drinkmachine.db.DaoUtilsStore;
@@ -183,6 +182,7 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
 
     private  String tempStringLog="";
     public void sendData(String data) {
+        Log.i("云端数据","发送= "+data);
         if(!tempStringLog.equals(data)){
             if (data.startsWith("FAAF01")){
                 LogUtils.file("云端数据","注册包 发送= "+data);
