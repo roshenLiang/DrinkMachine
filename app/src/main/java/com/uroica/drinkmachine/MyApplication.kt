@@ -9,10 +9,10 @@ import me.goldze.mvvmhabit.crash.CaocConfig
 class MyApplication : BaseApplication() {
 
 
-//    companion object instance {
-//        var machineFault:Boolean = false
-//
-//    }
+    companion object instance {
+        var machineFault:Boolean = false
+
+    }
         override fun onCreate() {
         super.onCreate()
         // 主要是添加下面这句代码
