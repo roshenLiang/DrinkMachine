@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+ 
+    <data>
+
+        <import type="com.uroica.drinkmachine.R" />
+
+        <variable
+            name="viewModel"
+            type="com.uroica.drinkmachine.ui.fragment.pay.ShipmentViewModel" />
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_pay_result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#eeeeee">
+            <ImageView
+                android:layout_marginTop="40dp"
+                android:id="@+id/iv_shipment_status"
+                android:layout_width="600dp"
+                android:layout_height="600dp"
+                android:src="@mipmap/icon_shipmenting"
+                />
+            <TextView
+                android:id="@+id/tv_shipment_status"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:text="请稍等，正在出货..."/>
+
+            <TextView
+                android:id="@+id/tv_backResult"
+                android:layout_marginTop="20dp"
+                android:text="5S后返回购物页"
+                android:textColor="@color/colorPrimary"
+                android:textSize="30sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 
@@ -14,8 +13,6 @@ import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.pudutech.mqtt.component.client.MqttClientFactory;
 import com.pudutech.mqtt.component.client.bean.SubscribeMessage;
 import com.pudutech.mqtt.component.client.callback.LoginStateCallback;
@@ -29,8 +26,8 @@ import com.pudutech.mqtt.component.client.config.SubscribeState;
 import com.pudutech.mqtt.component.client.config.UnsubscribeState;
 import com.uroica.drinkmachine.BR;
 import com.uroica.drinkmachine.R;
+import com.uroica.drinkmachine.bean.ShopInfoModel;
 import com.uroica.drinkmachine.bean.db.SaleRecordDB;
-import com.uroica.drinkmachine.bean.db.ShopManagerDB;
 import com.uroica.drinkmachine.bean.db.ShopModelDB;
 import com.uroica.drinkmachine.bean.rxbus.Bus_ACKBean;
 import com.uroica.drinkmachine.bean.rxbus.Bus_LooperDrinkBean;
@@ -38,11 +35,10 @@ import com.uroica.drinkmachine.constant.SharePConstant;
 import com.uroica.drinkmachine.databinding.ActivitySalespageBinding;
 import com.uroica.drinkmachine.db.DaoUtilsStore;
 import com.uroica.drinkmachine.gen.SaleRecordDBDao;
-import com.uroica.drinkmachine.gen.ShopManagerDBDao;
 import com.uroica.drinkmachine.gen.ShopModelDBDao;
 import com.uroica.drinkmachine.greement.AgreementManager;
-import com.uroica.drinkmachine.ui.fragment.ad.AdFragment;
-import com.uroica.drinkmachine.ui.fragment.pay.PayFragment;
+import com.uroica.drinkmachine.ui.fragment.main.MainFragment;
+import com.uroica.drinkmachine.ui.fragment.pay.ShipmentFragment;
 import com.uroica.drinkmachine.ui.fragment.shop.ShopFragment;
 import com.uroica.drinkmachine.ui.login.LoginActivity;
 import com.uroica.drinkmachine.util.ChangeTool;
@@ -51,9 +47,8 @@ import com.uroica.drinkmachine.util.SharedPreferenceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Type;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -119,8 +114,9 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
             }
         });
         mFragments = new ArrayList<>();
+        mFragments.add(new MainFragment());
         mFragments.add(new ShopFragment());
-        mFragments.add(new PayFragment());
+        mFragments.add(new ShipmentFragment());
         //默认选中第一个
         commitAllowingStateLoss(0);
     }
@@ -164,14 +160,13 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
         transaction.commitAllowingStateLoss();
     }
 
-    public void commitAllowingStateLoss(int position, ShopModelDB dataBean, boolean fromMachine) {
+    public void commitAllowingStateLoss(int position, List<ShopInfoModel> datas) {
         fragmentIndex = position;
         hideAllFragment();
         androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment currentFragment = mFragments.get(position);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("ShopModelDB", dataBean);//这里的values就是我们要传的值
-        bundle.putBoolean("fromMachine", fromMachine);
+        bundle.putSerializable("datas", (Serializable) datas);//这里的values就是我们要传的值
         currentFragment.setArguments(bundle);
         transaction.add(R.id.fl, currentFragment, position + "");
         transaction.commitAllowingStateLoss();
@@ -250,37 +245,43 @@ public class SalesPageActivity extends BaseActivity<ActivitySalespageBinding, Sa
             ToastUtils.showLong("机器故障，无法出货。");
             return;
         }
-
-        //判断货存是否充足
-        List<ShopManagerDB> s = DaoUtilsStore.getInstance().getShopManagerDBUtils().queryByQueryBuilder(ShopManagerDBDao.Properties.ProductID.eq(pid));
-        boolean isCheckStock = false;
-        ShopManagerDB smDB = null;//要出货到商品
-        for (ShopManagerDB sm : s) {
-            if (Integer.valueOf(sm.getStockNum()) > 1 && sm.getChannelFault().equals("0") && !isCheckStock) {
-                isCheckStock = true;
-                smDB = sm;
-            }
-        }
-        if (!isCheckStock) {
-            sendData(MQTT_SHIPMENT + orderID + "00" + MQTT_END);
-            ToastUtils.showLong("该商品货存不足！出货失败");
-            return;
-        }
+//
+//        //判断货存是否充足
+//        List<ShopManagerDB> s = DaoUtilsStore.getInstance().getShopManagerDBUtils().queryByQueryBuilder(ShopManagerDBDao.Properties.ProductID.eq(pid));
+//        boolean isCheckStock = false;
+//        ShopManagerDB smDB = null;//要出货到商品
+//        for (ShopManagerDB sm : s) {
+//            if (Integer.valueOf(sm.getStockNum()) > 1 && sm.getChannelFault().equals("0") && !isCheckStock) {
+//                isCheckStock = true;
+//                smDB = sm;
+//            }
+//        }
+//        if (!isCheckStock) {
+//            sendData(MQTT_SHIPMENT + orderID + "00" + MQTT_END);
+//            ToastUtils.showLong("该商品货存不足！出货失败");
+//            return;
+//        }
 
         //替换 防止覆盖订单号
         orderID=orderIDTemp;
 
         //FAAF03001004202007280928130939770000012345BB
         isAck = false;
-        //还没处理 通过from去区别
-        if (fragmentIndex == 1) {
-            //在支付页
-        } else {
-            //不在支付页
-            commitAllowingStateLoss(1, record_shop, false);
-        }
-        PayFragment currentFragment = (PayFragment) mFragments.get(fragmentIndex);
-        currentFragment.sendShipment(smDB);
+//        //还没处理 通过from去区别
+//        if (fragmentIndex == 1) {
+//            //在支付页
+//        } else {
+//            //不在支付页
+//            commitAllowingStateLoss(2, record_shop, false);
+//        }
+//       跳转到出货页面
+        ShopFragment currentFragment = (ShopFragment) mFragments.get(fragmentIndex);
+
+        commitAllowingStateLoss(2,currentFragment.getDatas());
+//        currentFragment.sendShipment();
+//        commitAllowingStateLoss(2, record_shop, false);
+
+
     }
 
     void registrationBusiness(@NotNull String msg) {

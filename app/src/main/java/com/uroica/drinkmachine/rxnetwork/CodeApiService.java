@@ -12,10 +12,11 @@ public interface CodeApiService {
     @POST("webservice.asmx/RetAliCode")
     Observable<CodeModel> getAliCode(@Field("ProductName") String productName, @Field("Price") String pPrice,
                                   @Field("ProductID") String productID, @Field("ShowURL") String showURL,
-                                  @Field("Detail") String detail,@Field("DeviceID") String deviceID);
+                                  @Field("Detail") String detail,@Field("DeviceID") String deviceID,@Field("goodsjson") String goodsjson);
     @FormUrlEncoded
     @POST("webservice.asmx/RetWechatCode")
     Observable<CodeModel> getWxCode(@Field("ProductName") String productName, @Field("Price") String pPrice,
                                     @Field("ProductID") String productID,@Field("DeviceID") String deviceID,
-                                    @Field("BoardID") String BoardID  ,@Field("RoundID") String RoundID);
+                                    @Field("BoardID") String BoardID  ,@Field("RoundID") String RoundID
+         ,@Field("goodsjson") String goodsjson);
 }

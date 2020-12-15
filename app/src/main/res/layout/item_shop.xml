@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="200dp"
-    android:layout_height="250dp"
+    android:layout_width="250dp"
+    android:layout_height="350dp"
     android:orientation="vertical"
-    app:cardElevation="20dp"
-    app:cardCornerRadius="30dp"
+    app:cardElevation="10dp"
+    app:cardCornerRadius="20dp"
     android:layout_margin="10dp"
     android:gravity="center"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:background="#ffffff"
         android:orientation="vertical"
         android:layout_height="match_parent">
 
-
+        <TextView
+            android:gravity="center"
+            android:id="@+id/tv_shopname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:text="可樂" />
         <ImageView
             android:layout_marginTop="10dp"
-            android:layout_gravity="center_horizontal"
             android:id="@+id/iv_shop"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/tv_shopname"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:src="@mipmap/icon_defaultshop"
@@ -28,10 +37,19 @@
         <TextView
             android:gravity="center"
             android:id="@+id/tv_price"
+            android:layout_below="@id/iv_shop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="30sp"
-            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
             android:text="￥3.00" />
-    </LinearLayout>
+        <ImageView
+            android:src="@mipmap/icon_shoppingcar1"
+            android:layout_width="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_height="70dp"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

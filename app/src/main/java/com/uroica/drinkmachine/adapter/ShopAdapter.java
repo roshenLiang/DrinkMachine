@@ -82,7 +82,7 @@ public class ShopAdapter extends RecyclerView.Adapter<MyShopHolder> {
         RequestOptions options = RequestOptions.bitmapTransform(roundedCorners);
 //        DecimalFormat df = new DecimalFormat("#0.00");
         holder.tv_price.setText("￥ "+dataBean.getPrice());
-//        holder.tv_name.setText(dataBean.getProductName());
+        holder.tv_name.setText(dataBean.getProductName());
 //        holder.tv_describe.setText(dataBean.getDetail());
         Glide.with(context).load(dataBean.getImgURL()).apply(options).into(holder.iv_shop);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -116,14 +116,14 @@ public class ShopAdapter extends RecyclerView.Adapter<MyShopHolder> {
 
 class MyShopHolder extends RecyclerView.ViewHolder {
     TextView tv_price;
-//    TextView tv_name;
+    TextView tv_name;
 //    TextView tv_describe;
     ImageView iv_shop;
 
     public MyShopHolder(View itemView) {
         super(itemView);
         tv_price = itemView.findViewById(R.id.tv_price);
-//        tv_name = itemView.findViewById(R.id.tv_name);
+        tv_name = itemView.findViewById(R.id.tv_shopname);
 //        tv_describe = itemView.findViewById(R.id.tv_describe);
         iv_shop = itemView.findViewById(R.id.iv_shop);
     }

@@ -8,7 +8,7 @@ import androidx.databinding.ObservableField;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 
-public class PayViewModel extends BaseViewModel {
+public class ShipmentViewModel extends BaseViewModel {
     private String TAG="PayViewModel";
     private boolean isVisible=true;
     //订阅者
@@ -17,7 +17,7 @@ public class PayViewModel extends BaseViewModel {
     //封装一个界面发生改变的观察者
     public UIChangeObservable uc = new UIChangeObservable();
 
-    public PayViewModel(@NonNull Application application) {
+    public ShipmentViewModel(@NonNull Application application) {
         super(application);
     }
 
