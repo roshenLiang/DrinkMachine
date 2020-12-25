@@ -6,6 +6,9 @@ apply plugin: 'kotlin-kapt'
 kapt {
     generateStubs = true
 }
+def getTime() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getDefault());
+}
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     defaultConfig {
@@ -21,7 +24,11 @@ android {
 //        }
     }
 
-
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName  ="A-4-  ${getTime()}-${defaultConfig.versionName}.apk"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false

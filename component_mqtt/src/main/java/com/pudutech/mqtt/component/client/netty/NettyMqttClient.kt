@@ -478,12 +478,12 @@ class NettyMqttClient private constructor() : IMqttClient {
                 if (pipeline().get(HeartbeatHandler::class.simpleName) != null) {
                     pipeline().remove(HeartbeatHandler::class.simpleName)
                 }
-                pipeline().addAfter(
-                    IdleStateHandler::class.simpleName,
-                    HeartbeatHandler::class.simpleName,
-                    HeartbeatHandler(this@NettyMqttClient)
-                )
-                Log.d(TAG, "添加心跳管理handler成功")
+//                pipeline().addAfter(
+//                    IdleStateHandler::class.simpleName,
+//                    HeartbeatHandler::class.simpleName,
+//                    HeartbeatHandler(this@NettyMqttClient)
+//                )
+//                Log.d(TAG, "添加心跳管理handler成功")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
